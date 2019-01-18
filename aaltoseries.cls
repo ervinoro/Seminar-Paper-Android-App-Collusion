@@ -1,4 +1,4 @@
-%% aaltoseries.cls 1.2
+%% aaltoseries.cls 1.2.1
 %% Class file for the Aalto University publication series
 %% ---
 %% Copyright:
@@ -10,6 +10,11 @@
 %% Department of Signal Processing and Acoustics
 %% Aalto University School of Electrical Engineering
 %%
+%% Maintained (2017-) by:
+%% Martin Vermeer
+%% Department of the Built Environment 
+%% Aalto University School of Engineering
+%%
 %% URL: https://wiki.aalto.fi/display/aaltolatex/
 %% ---
 %% LICENSE
@@ -17,13 +22,26 @@
 %% (\url{http://creativecommons.org/licenses/by/1.0/}). This means that you can use the class freely in your own documents.
 %% ---
 %% Updated 2012/03/11
+%%
+%% Updated 2017/03/01 Martin Vermeer: bug fixes, thx Jussi Tarvainen
+%% Updated 2017/03/15 Martin Vermeer: fouriernc support
+%% Updated 2017/03/22 Martin Vermeer: added better vertical layout option, microtype 
+%% Updated 2017/12/26 Martin Vermeer: allow for 'oneside' option
+%% Updated 2017/12/27 Martin Vermeer: added pdfa option for PDF/A production
+%% Updated 2018/01/11 Panu Hiekkataipale (PH): useability improvements
+%% Updated 2018/08/07 Martin Vermeer: hyperref links to headers fix
+%% Updated 2018/08/08 Martin Vermeer: introduced LoF, LoT, Abbreviations, Symbols with proper hyperref links.
 
 \def\AaltoSeriesVersion{1.2}
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{aaltoseries}[2012/03/11 v\AaltoSeriesVersion Aalto University series class file]
+\ProvidesClass{aaltoseries}[2017/03/01 v\AaltoSeriesVersion Aalto University series class file]
 
-%% Default class
+%% Default class. Allow 'oneside' option
+\@ifclasswith{aaltoseries}{oneside}{%
+\LoadClass[11pt,oneside]{report}
+}{%
 \LoadClass[11pt,twoside,openright]{report}
+}
 
 %% Required for conditionals
 \RequirePackage{ifthen}
@@ -55,6 +73,15 @@
 % Conditional for drafting
 \newboolean{aaltoseriesdraft}
 \setboolean{aaltoseriesdraft}{false}
+% Conditional for better looking math
+\newboolean{aaltoseriesmath}
+\setboolean{aaltoseriesmath}{false}
+% Conditional for better top, bottom margins and linespacing (thx Hassan Naseri)
+\newboolean{aaltoseriesvertlayout}
+\setboolean{aaltoseriesvertlayout}{false}
+% Conditional for PDF/A compatibility
+\newboolean{pdfa}
+\setboolean{pdfa}{false}
 
 %% Class options
 % Option 'articlecollection' - for article collections
@@ -135,6 +162,18 @@
 \DeclareOption{final}{%
 	\setboolean{aaltoseriesdraft}{false}%
 }
+% Option 'math' - use better looking math font with New Cent Schoolbook
+\DeclareOption{math}{%
+	\setboolean{aaltoseriesmath}{true}%
+}
+% Option 'vertlayout' - better looking vertical layout, top, bottom margins
+\DeclareOption{vertlayout}{%
+	\setboolean{aaltoseriesvertlayout}{true}%
+}
+% Option 'pdfa' - produce PDF/A compatible file
+\DeclareOption{pdfa}{%
+	\setboolean{pdfa}{true}%
+}
 % Other options - no processing
 \DeclareOption*{}
 
@@ -151,6 +190,13 @@
 
 %% Set the fonts
 \ifthenelse{\boolean{aaltoseriesdraft}}{\RequirePackage{aaltologo}}{\RequirePackage[Uncoated]{aaltologo}}
+\RequirePackage[protrusion=true, expansion=true,final,babel=true]{microtype}
+%% Set math font
+\ifthenelse{\boolean{aaltoseriesmath}}{\usepackage{fouriernc2}}{}
+
+% Produce PDF/A
+\ifthenelse{\boolean{pdfa}}
+{\usepackage[a-1b]{pdfx}}{}
 
 %% Set the marginals
 \RequirePackage{geometry}
@@ -164,7 +210,7 @@
 		paperheight=126mm,%
 		textwidth=123mm,%
 		textheight=126mm,%
-		left=0mm,%
+		left=0.4mm,%
 		right=0mm,%
 		top=0mm,%
 		bottom=0mm,%
@@ -173,25 +219,41 @@
 		headsep=0mm%
 	}%
 	% Set the paragraph indentation
-	\setlength{\parindent}{2mm}%
-	\setlength{\parskip}{10.8pt}%
+	\setlength{\parindent}{3mm}%
+	\setlength{\parskip}{0pt}%
 }{%
 	% Set the geometry
-	\geometry{%
-		paper=a4paper,%
-		left=5.5cm,%
-		right=2.5cm,%
-		top=1.5cm,%
-		bottom=2.7cm,%
-		headheight=8pt,%
-		headsep=\the\aaltoseriestmplength,%
-		footskip=1.2cm%
+	\ifthenelse{\boolean{aaltoseriesvertlayout}}{%
+		\geometry{%
+			paper=a4paper,%
+			left=5.5cm,%
+			right=2.5cm,%
+			top=3cm,%
+			bottom=3.5cm,%
+			headheight=8pt,%
+			headsep=\the\aaltoseriestmplength,%
+			footskip=1.2cm%
+		}}{%
+		\geometry{%
+			paper=a4paper,%
+			left=5.5cm,%
+			right=2.5cm,%
+			top=1.5cm,%
+			bottom=2.7cm,%
+			headheight=8pt,%
+			headsep=\the\aaltoseriestmplength,%
+		}%
 	}%
+
 	% Set the paragraph indentation
 	\setlength{\parindent}{3mm}%
 	\setlength{\parskip}{0mm}%
-	% Set the baseline strecth
-	\renewcommand{\baselinestretch}{1.4}%
+	% Set the baseline stretch
+	\ifthenelse{\boolean{aaltoseriesvertlayout}}{%
+		\renewcommand{\baselinestretch}{1.1}%
+	}{%
+		\renewcommand{\baselinestretch}{1.4}%
+	}%
 }
 
 %% Set the page bottoms to be ragged
@@ -258,6 +320,7 @@
 	\fi%
 	\addtocontents{lof}{\protect\addvspace{10\p@}}%
 	\addtocontents{lot}{\protect\addvspace{10\p@}}%
+	\chaptermark{#1}%
 	\@makechapterhead{#2}%
 	\@afterheading%
 }
@@ -274,7 +337,6 @@
 	\begin{minipage}[t]{\linewidth}%
 		\fontsize{20pt}{20pt}\selectfont\bfseries\sffamily\flushleft\vskip-3mm #1%
 	\end{minipage}\vskip0mm\null%
-	\chaptermark{#1}%
 	\setlength{\linewidth}{\textwidth}%
 	\addtolength{\AaltoSeriesChapterHeadHeight}{-\pagetotal}%
 	\addtolength{\AaltoSeriesChapterHeadHeight}{-3mm}%
@@ -318,7 +380,25 @@
 	\@startsection{subparagraph}{5}{0mm}{-1pt}{-1em}{%
 		\flushleft\itshape\rmfamily\normalsize}%
 }
-\makeatother
+
+% Nicer ToC, more space for numbers
+\usepackage[titles]{tocloft}% 
+\setlength\cftchapindent{0em}
+\setlength\cftchapnumwidth{2.0em}
+\setlength\cftsecindent{2.0em}
+\setlength\cftsecnumwidth{3.0em}
+\setlength\cftsubsecindent{5.0em}
+\setlength\cftsubsecnumwidth{4.2em}
+\setlength\cftfigindent{2.0em}
+\setlength\cftfignumwidth{3.0em}
+\setlength\cfttabindent{2.0em}
+\setlength\cfttabnumwidth{3.0em}
+
+\setlength{\cftbeforetoctitleskip}{-0.2in} % Fix too much white above Contents
+
+\renewcommand{\cfttoctitlefont}{\fontsize{20pt}{20pt}\selectfont\bfseries\sffamily}
+\renewcommand{\cftloftitlefont}{\fontsize{20pt}{20pt}\selectfont\bfseries\sffamily}
+\renewcommand{\cftlottitlefont}{\fontsize{20pt}{20pt}\selectfont\bfseries\sffamily}
 
 %%% Set the header and footer
 \makeatletter
@@ -386,6 +466,8 @@
 		\@ifpackagewith{babel}{finnish}{%
 			\addto\captionsfinnish{%
 				\def\prefacedefaultlocation{Helsinki}%
+			% This fixes a bug in finnish.ldf (missing percent sign)
+			\def\abstractname{Tiivistelm\"a}%
 			}%
 		}{}%
 		\@ifpackagewith{babel}{swedish}{%
@@ -403,10 +485,14 @@
 	\gdef\AaltoSeriesPrefaceAuthor{\AaltoSeriesAuthor}
 	\ifthenelse{\boolean{aaltoseriesnochapters} \and \not\boolean{aaltoseriesarticlecollection}}{%
 		\section*{\prefacename}%
+		\phantomsection%
 		\AaltoSeriesPrefaceToTOCCommand{section}{\prefacename}%
 	}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
 		\chapter*{\prefacename}%
+		\phantomsection%
 		\AaltoSeriesPrefaceToTOCCommand{chapter}{\prefacename}%
+		\vspace*{6.5cm}%
 	}%
 	\gdef\AaltoSeriesPrefaceEnding{#1}%
 }{%
@@ -659,7 +745,9 @@
 \renewenvironment{thebibliography}[1]{%
 	\ifthenelse{\boolean{aaltoseriesnochapters}}{%
 		\section*{\bibname}%
+		\phantomsection%
 	}{%
+		\phantomsection%
 		\chapter*{\bibname}%
 		\chaptermark{\bibname}%
 	}%
@@ -692,12 +780,15 @@
 	}%
 	\renewcommand{\bibliography}[1]{%
 		{\fontsize{10pt}{10pt}\selectfont%
+		\cleardoublepage
+		\phantomsection%
 		\AaltoSeriesBibliography{#1}}%
 	}%
 }
 
 %% Include the table of contents automatically to the table of contents
 \newcommand{\AaltoSeriesTOCToTOCCommand}[2]{%
+	\phantomsection%
 	\addcontentsline{toc}{#1}{#2}%
 }
 \makeatletter
@@ -705,20 +796,73 @@
 	\ifthenelse{\boolean{aaltoseriesnochapters}\and\not\boolean{aaltoseriesarticlecollection}}{%
 		\section*{\contentsname}%
 	}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
 		\chapter*{\contentsname}%
 		\AaltoSeriesTOCToTOCCommand{chapter}{\contentsname}%
 		\chaptermark{\contentsname}%
+		\vspace*{6.5cm}%
 	}%
 	\@starttoc{toc}%
 	\vskip22pt%
 }
+\renewcommand{\listoftables}{%
+	\ifthenelse{\boolean{aaltoseriesnochapters}\and\not\boolean{aaltoseriesarticlecollection}}{%
+		\section*{\listtablename}%
+	}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
+		\chapter*{\listtablename}%
+		\AaltoSeriesTOCToTOCCommand{chapter}{\listtablename}%
+		\chaptermark{\listtablename}%
+		\vspace*{6.5cm}%
+	}%
+	\@starttoc{lot}%
+	\vskip22pt%
+}
+\renewcommand{\listoffigures}{%
+	\ifthenelse{\boolean{aaltoseriesnochapters}\and\not\boolean{aaltoseriesarticlecollection}}{%
+		\section*{\listfigurename}%
+	}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
+		\chapter*{\listfigurename}%
+		\AaltoSeriesTOCToTOCCommand{chapter}{\listfigurename}%
+		\vspace*{6.5cm}%
+	}%
+	\@starttoc{lof}%
+	\vskip22pt%
+}
 \makeatother
+
+\def\abbrevname{Abbreviations}%
+\newcommand{\abbreviations}{%
+	\ifthenelse{\boolean{aaltoseriesnochapters}\and\not\boolean{aaltoseriesarticlecollection}}{%
+		\section*{\abbrevname}%
+	}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
+		\chapter*{\abbrevname}%
+		\AaltoSeriesTOCToTOCCommand{chapter}{\abbrevname}%
+		\chaptermark{\abbrevname}%
+		\vspace*{6.5cm}%
+	}%
+}
+\def\symbolsname{Symbols}%
+\newcommand{\symbols}{%
+	\ifthenelse{\boolean{aaltoseriesnochapters}\and\not\boolean{aaltoseriesarticlecollection}}{%
+		\section*{\symbolsname}%
+	}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
+		\chapter*{\symbolsname}%
+		\AaltoSeriesTOCToTOCCommand{chapter}{\symbolsname}%
+		\chaptermark{\symbolsname}%
+		\vspace*{6.5cm}%
+	}%
+}
+
 
 %% Include everything else to the table of contents automatically
 \ifthenelse{\boolean{aaltoseriesnochapters}}{%
-	\RequirePackage[nottoc,notbib]{tocbibind}%
+	\RequirePackage[nottoc,notlof,notlot,notbib]{tocbibind}%
 }{%
-	\RequirePackage[nottoc]{tocbibind}%
+	\RequirePackage[nottoc,notlof,notlot]{tocbibind}%
 }
 
 %% Define a command to check whether packages are loaded
@@ -747,6 +891,7 @@
 			}%
 	}%
 	\renewcommand{\AaltoSeriesTOCToTOCCommand}[2]{%
+		\phantomsection%
 		\addtocontents{toc}{%
 			\string\noindent\string\bfseries\string\makebox[2.3em][l]{\thepage}%
 			\string\sffamily\relax\contentsname\string\newline%
@@ -887,6 +1032,7 @@
 	\gdef\AaltoSeriesDissertationPublicationPunctuationThird{,}%
 	\gdef\AaltoSeriesDissertationPublicationPunctuationFourth{,}%
 	\gdef\AaltoSeriesDissertationPublicationPunctuationFifth{}%
+	\gdef\AaltoSeriesDissertationPublicationPunctuationSixth{.}% Added BH
 	\gdef\AaltoSeriesDissertationPublicationFormatPreBook{\upshape\Uppercasefirst}%
 	\gdef\AaltoSeriesDissertationPublicationFormatFirst{}%
 	\gdef\AaltoSeriesDissertationPublicationFormatSecond{}%
@@ -1079,7 +1225,8 @@
 			\ifthenelse{\equal{#1}{accepted}}{%
 				\addtocontents{asp}{\string\item\space\string\publication[\AaltoSeriesDissertationAcceptedPrefix]{#2}{#3}{#4}{#5}{#6}{#7}}%
 			}{%
-				\ifthenelse{\equal{#1}{submitted}\and\boolean{aaltoseriesdraft}}{%
+%				\ifthenelse{\equal{#1}{submitted}\and\boolean{aaltoseriesdraft}}{%
+				\ifthenelse{\equal{#1}{submitted}}{%
 					\addtocontents{asp}{\string\item\space\string\publication[\AaltoSeriesDissertationSubmittedPrefix]{#2}{#3}{#4}{#5}{#6}{#7}}%
 				}{%
 					\addtocontents{asp}{\string\item\space\string\publication{#2}{#3}{#4}{#5}{#6}{#7}}%
@@ -1092,14 +1239,15 @@
 		}%
 		\gdef\AaltoSeriesChapterHeader{%
 			\vskip0pt\AaltoSeriesMarginPar{\vspace*{-6.6cm}\rule{2.5cm}{6.5cm}}%
-			{\bfseries\sffamily\fontsize{11pt}{11pt}\selectfont%
+%			{\bfseries\sffamily\fontsize{11pt}{11pt}\selectfont%
+			{\mdseries\sffamily\fontsize{12pt}{12pt}\selectfont% PH
 			\ifthenelse{\equal{#1}{conference}}{%
 				\noindent\publication[\AaltoSeriesDissertationConferencePrefix]{#2}{#3}{#4}{#5}{#6}{#7}%
 			}{%
 				\ifthenelse{\equal{#1}{accepted}}{%
 					\noindent\publication[\AaltoSeriesDissertationAcceptedPrefix]{#2}{#3}{#4}{#5}{#6}{#7}%
 				}{%
-					\ifthenelse{\equal{#1}{submitted}\and\boolean{aaltoseriesdraft}}{%
+					\ifthenelse{\equal{#1}{submitted}}{%
 						\noindent\publication[\AaltoSeriesDissertationSubmittedPrefix]{#2}{#3}{#4}{#5}{#6}{#7}%
 					}{%
 						\noindent\publication{#2}{#3}{#4}{#5}{#6}{#7}%
@@ -1107,11 +1255,20 @@
 				}%
 			}}%
 		}%
+		\cleardoublepage%
+		\phantomsection%
 		\chapter*{\publicationname\  \Roman{aaltoseriesdissertationpublication}}%
+		\ifthenelse{\arabic{aaltoseriesdissertationpublication} = 1}{%
+			\addcontentsline{toc}{chapter}{\publicationsname}%
+		}{}%
+		\vskip-8.5cm%
+		\publicationpdfbookmark{#9}%
+		\vskip8.5cm%
 		\vskip22pt%
-		\ifthenelse{\equal{#1}{submitted}\and\boolean{aaltoseriesdraft}}{}{%
+		\ifthenelse{\equal{#1}{submitted}}{}{%
 			{\sffamily\fontsize{11pt}{11pt}\selectfont%
-			\textcopyright\ #7 #8.\\\reprintname.}\normalfont%
+%			\textcopyright\ #7 #8.\\\reprintname.}\normalfont%
+			\textcopyright\ #7 #8\\\reprintname.}\normalfont% Dot removed (PH) as it can be added manually
 		}%
 		\pagestyle{empty}%
 		\ifthenelse{\boolean{aaltoseriesdissertationnopagenumbers}}{%
@@ -1122,10 +1279,7 @@
 		\protected@write\@auxout{}{%
 			\publicationlabels{#9}%
 		}%
-		\ifthenelse{\arabic{aaltoseriesdissertationpublication} = 1}{%
-			\addcontentsline{toc}{chapter}{\publicationsname}%
-		}{}%
-		\publicationpdfbookmark{#9}%
+		%%\publicationpdfbookmark{#9}%
 	}%
 	% Command for including the pdf publication
 	\newcommand{\addpublicationpdf}[2][]{%
@@ -1161,10 +1315,18 @@
 	}%
 	% Label for the author's contribution
 	\def\authorscontributionname{Author's Contribution}%
+	% Person or company responsible for language checking
+	\def\languagechecker{X}%
+	\newcommand{\languagecheck}[1]{%
+		\def\languagechecker{#1}%
+	}%
 	% Command for typesetting the list of publication and author's contribution (if not suppressed)
 	\newcommand{\listofpublications}{%
+		\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
 		\chapter*{\listofpublicationsname}%
+		\phantomsection%
 		\addcontentsline{toc}{chapter}{\listofpublicationsname}%
+		\vspace*{6.5cm}%
 		\listofpublicationspreamble%
 		\begin{enumerate}%
 		\renewcommand{\labelenumi}{\bfseries\Roman{enumi}}%
@@ -1174,9 +1336,15 @@
 		\@starttoc{asp}%
 		\end{enumerate}%
 		\ifthenelse{\boolean{aaltoseriesdissertationnocontribution}}{}{%
+			\setlength{\AaltoSeriesChapterHeadHeight}{0cm}%
 			\chapter*{\authorscontributionname}%
+			\phantomsection%
 			\addcontentsline{toc}{chapter}{\authorscontributionname}%
+			\vspace*{6.5cm}%
 			\@starttoc{asc}%
+			\ifthenelse{\equal{\languagechecker}{X}}{}{%
+				\languagecheckack			
+			}%
 		}%
 	}%
 	% Label for errata list
@@ -1188,7 +1356,9 @@
 	}%
 	% Command for typesetting the errata list
 	\newcommand{\errata}[1][]{%
-		\chapter*{\errataname}%
+		\cleardoublepage%
+		\phantomsection%
+		\chapter*{\vspace*{4mm}\errataname}%
 		\addcontentsline{toc}{chapter}{\errataname}%
 		\ifthenelse{\equal{#1}{}}{}{#1}%
 		\@starttoc{ase}%
@@ -1197,6 +1367,8 @@
 	\AtBeginDocument{%
 		\@ifpackagewith{babel}{finnish}{%
 			\addto\captionsfinnish{%
+				\def\abbrevname{Lyhenteet}%
+				\def\symbolsname{Symbolit}%
 				\def\listofpublicationsname{Julkaisuluettelo}%
 				\def\listofpublicationspreamble{%
 					T{\"a}m{\"a} v{\"a}it{\"o}skirja koostuu yhteenvedosta ja seuraavista julkaisuista, joihin viitataan tekstiss{\"a} roomalaisin numeroin.%
@@ -1209,11 +1381,19 @@
 				\def\AaltoSeriesDissertationSubmittedPrefix{l{\"a}hetetty julkaisuun}%
 				\def\authorscontributionname{Tekij{\"a}n osuus}%
 				\def\reprintname{Julkaistu luvalla}%
+				\def\languagecheckack{%
+					\section*{Kielentarkastus}
+					Työni on oikolukenut/kielentarkastanut \languagechecker. %
+					Olen itse hyväksynyt/hylännyt kielentarkastajan ehdottamat muutokset yksitellen. %
+					Työni tieteellinen sisältö ei ole tästä muuttunut.%
+				}%
 			}%
 		}{}%
 		\@ifpackagewith{babel}{swedish}{%
 			\addto\captionsswedish{%
-				\def\listofpublicationsname{Publikationf{\"o}rtekning}%
+				\def\abbrevname{F\"orkortningar}%
+				\def\symbolsname{Symboler}%
+				\def\listofpublicationsname{Publikationsf{\"o}rteckning}%
 				\def\listofpublicationspreamble{%
 					Denna doktorsavhandling best{\aa}r av en {\"o}versikt och i f{\"o}ljande publikationer som avses i texten som deras romerska siffror.%
 				}%
@@ -1225,10 +1405,18 @@
 				\def\AaltoSeriesDissertationSubmittedPrefix{l{\"a}mnats till}%
 				\def\authorscontributionname{F{\"o}rfattarens bidrag}%
 				\def\reprintname{Publiceras med tillst{\aa}nd}%
+				\def\languagecheckack{%
+					\section*{Språkgranskning}
+					Min avhandling har språkgranskats av \languagechecker. %
+					Jag har personligen granskat och accepterat/förkastat resultaterna av språkgransningen ett för ett. %
+					Detta har inte ändrat vetenskapliga innehållet av min avhandling.%
+				}%
 			}%
 		}{}%
 		\@ifpackagewith{babel}{english}{%
 			\addto\captionsenglish{%
+				\def\abbrevname{Abbreviations}%
+				\def\symbolsname{Symbols}%
 				\def\listofpublicationsname{List of Publications}%
 				\def\listofpublicationspreamble{%
 					This thesis consists of an overview and of the following publications which are referred to in the text by their Roman numerals.%
@@ -1241,10 +1429,17 @@
 				\def\AaltoSeriesDissertationSubmittedPrefix{submitted to}%
 				\def\authorscontributionname{Author's Contribution}%
 				\def\reprintname{Reprinted with permission}%
+				\def\languagecheckack{%
+					\section*{Language check}
+					The language of my dissertation has been checked by \languagechecker. %
+					I have personally examined and accepted/rejected the results of the language check one by one. %
+					This has not affected the scientific content of my dissertation.%
+				}%
 			}%
 		}{}%
 		% Renew couple of commands if hyperref is loaded
 		\IfAaltoSeriesPackageLoaded{hyperref}{%
+			\hypersetup{bookmarksopen,bookmarksnumbered,colorlinks,plainpages=false} % !plainpages means inter-page links work
 			% Command for the PDF bookmark
 			\renewcommand{\publicationpdfbookmark}[1]{%
 				\pdfbookmark[1]{\publicationname\ \Roman{aaltoseriesdissertationpublication}}{pub.#1}%
@@ -1332,7 +1527,7 @@
 		\thispagestyle{empty}%
 		{\noindent\fontsize{12pt}{12pt}\selectfont\bfseries\ifthenelse{\equal{#1}{}}{}{\selectlanguage{#1}}\abstractname}
 		\vskip11pt%
-		{\noindent\fontsize{10pt}{10pt}\ifthenelse{\equal{#1}{}}{}{\selectlanguage{#1}}\noindent #2}%
+		{\noindent\fontsize{10pt}{10pt}\selectfont\ifthenelse{\equal{#1}{}}{}{\selectlanguage{#1}}\noindent#2}%
 		\vskip22pt%
 	}%
 	\def\draftname{DRAFT}
