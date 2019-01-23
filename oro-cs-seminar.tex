@@ -4,6 +4,8 @@
 \usepackage{IEEEtrantools}
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsfonts}
+\usepackage{todonotes}
+\newcommand{\TODO}[1]{\todo[inline]{#1}}
 \geometry{left=4cm,right=4cm} % TODO: remove
 
 \begin{document}
@@ -29,6 +31,7 @@ Android supports various communication methods between apps, and colluding apps 
 \noindent KEYWORDS: keywords, separated by commas
 
 \end{abstract}
+\TODO{add actual abstract and keywords}
 
 
 %============================================================
@@ -48,5 +51,9 @@ The goal of this seminar topic is to:
 \nocite{*}
 \bibliographystyle{IEEEtran}
 \bibliography{ieee,oro-cs-seminar}
+\TODO{remove nocite}
+
+\listoftodos
+\todo{remove list of todos}
 
 \end{document}

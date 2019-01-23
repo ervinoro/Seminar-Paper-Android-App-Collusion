@@ -433,10 +433,10 @@
 
 %% Set the marginpar command
 \let\AaltoSeriesMarginPar\marginpar
-\renewcommand{\marginpar}[2][]{%
-	\ifthenelse{\equal{#1}{}}{}{\footnote{#1}\textsuperscript{, }}%
-	\footnote{#2}%
-}
+% \renewcommand{\marginpar}[2][]{%
+% 	\ifthenelse{\equal{#1}{}}{}{\footnote{#1}\textsuperscript{, }}%
+% 	\footnote{#2}%
+% }
     
 %% Renew the \maketitle command
 \renewcommand{\maketitle}{}
