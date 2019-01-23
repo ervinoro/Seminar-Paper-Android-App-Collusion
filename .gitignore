@@ -232,6 +232,9 @@ pythontex-files-*/
 TSWLatexianTemp*
 
 ## Editors:
+# Visual Studio Code
+.vscode/
+
 # WinEdt
 *.bak
 *.sav
