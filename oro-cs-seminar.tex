@@ -5,8 +5,18 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsfonts}
 \usepackage{todonotes}
+\usepackage[numbers]{natbib}
 \newcommand{\TODO}[1]{\todo[inline]{#1}}
-\geometry{left=4cm,right=4cm} % TODO: remove
+\geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
+
+% Use “\tocite{}” to get “citation needed” in document
+\newcounter{undefinedreferences}
+\setcounter{undefinedreferences}{0}
+\newcommand\tocite[1]{
+	\stepcounter{undefinedreferences}
+	\todo{Citation needed \theundefinedreferences: #1}
+	[\,\textbf{\color{red}!}\,]
+}
 
 \begin{document}
 \bstctlcite{BSTcontrol}
@@ -45,15 +55,39 @@ The goal of this seminar topic is to:
 	\item Survey current Android app collusion literature.
 \end{enumerate}
 
+\section{Description and definition of app collusion}
+
+The Oxford English Dictionary defines collusion as "Secret agreement or understanding for purposes of trickery or fraud; underhand scheming or working with another; deceit, fraud, trickery." \cite{OEDcollusion}. In this context, \cite{Asavoae2017} defines that app collusion is when, in performing a threat, several apps are working together. From this, three aspects of collusion can be derived:
+\begin{enumerate}
+	\item Collusion is secret. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \tocite{}.
+	\item Collusion is when all colluding parties are in agreement. A distinctly different but related concept is the “confused deputy” attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}. 
+	\item Collusion is with malicious intent. In the Android context, it would be the intention to violate one of its security goals, which are to protect application data, user data, and system resources (including the network) \cite{AOSP2019}. The Android Open Source Project also lists providing "application isolation from the system, other applications, and from the user" as a separate goal, but in this context, collusion would be when apps work together to break isolation with some third component, as for two willing parties there exist several legitimate communication channels \cite{AOSP2019b}.
+\end{enumerate}
+
+\TODO{many things affect, including non technical}
+
+\TODO{difficult to distinguish}
+
+\section{Methods for colluding}
+\subsection{Overt channels}
+\subsection{Covert channels}
+
+\section{Examples of Android app collusion}
+
+A very widely cited example of collusion is an imaginary situation as follows. One app has access sensitive information, but no access to internet. Another app, on the other hand, has access to internet, but no access to any sensitive information. Many authors \tocite{} argue that in this case, one app could pass information to the other one, which could in turn then exfiltrate the information. Some authors \tocite{} have extended this concept to also cover cases where data is passed to multiple apps before being finally exfiltrated. All current research focuses on detecting such situations.
+
+There is one known case of Android app collusion in the wild \cite{Blasco2016}. Interestingly enough, even though this example is also widely referred to \tocite{list some references}, it does not follow the pattern described above. \todo{short description of MoPlus SDK} 
+
+\section{Existing methods for detecting collusions}
 
 %============================================================
 
 \nocite{*}
-\bibliographystyle{IEEEtran}
+\bibliographystyle{IEEEtranN}
 \bibliography{ieee,oro-cs-seminar}
 \TODO{remove nocite}
 
 \listoftodos
-\todo{remove list of todos}
+\TODO{remove list of todos}
 
 \end{document}
