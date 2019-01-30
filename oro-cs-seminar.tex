@@ -5,6 +5,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsfonts}
 \usepackage{todonotes}
+\usepackage{textcomp}
 \usepackage[numbers]{natbib}
 \newcommand{\TODO}[1]{\todo[inline]{#1}}
 \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
@@ -35,13 +36,12 @@
 %==========================================================
 
 \begin{abstract}
-Android supports various communication methods between apps, and colluding apps is an emerging threat to Android based devices. An app collusion is where two or more apps collude in some manor to perform a malicious action that an app cannot perform independently. State-of-the-art malware detection systems analyze apps in isolation, and therefore fail to detect joint malicious actions between colluding two or more apps.
+	\TODO{abstract}
 
 \vspace{3mm}
-\noindent KEYWORDS: keywords, separated by commas
+\noindent KEYWORDS: \todo[inline, inlinewidth=5cm, noinlinepar]{list, of, key, words}
 
 \end{abstract}
-\TODO{add actual abstract and keywords}
 
 
 %============================================================
@@ -49,11 +49,24 @@ Android supports various communication methods between apps, and colluding apps 
 
 \section{Introduction}
 
-The goal of this seminar topic is to:
-\begin{enumerate}
-	\item Survey current Android malware detection literature, techniques, and tools.
-	\item Survey current Android app collusion literature.
-\end{enumerate}
+Android is estimated to be the most widely used operating system overall \cite{AWSLLC2018, StatCounter2018}, running on more than 2 billion active devices \cite{AOSP2018}. While this is not reflected by malware,  most of which still targets Windows, both the number and complexity of attacks against Android are increasing \cite{AVTESTGH2018}. \citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
+
+Taking that into account, defending Android devices against malware is an active area of research. Thanks to recent developments, exploit pricing and difficulty are growing \cite{AOSP2018}, indicating that many common attacks can now be detected and protected against. However, especially with increasing incentives, malicious actors are looking for ways to bypass existing protections, and some threats, like app collusion, still can not be reliably detected nor defended against.
+
+% definition of collusion Asavoae2017
+% willing apps can work together in android AOSP2019b
+
+% There has been some work in this area by several authors.
+% Filtering
+% 	rule-based
+% 	machine learning
+% model based
+% runtime
+
+% limitations of prior work
+% only wild example not covered by existing solutions
+% extremely difficult issue
+% in this report a more 
 
 \section{Description and definition of app collusion}
 
