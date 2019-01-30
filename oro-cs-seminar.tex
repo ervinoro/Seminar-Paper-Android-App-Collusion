@@ -53,20 +53,16 @@ Android is estimated to be the most widely used operating system overall \cite{A
 
 Taking that into account, defending Android devices against malware is an active area of research. Thanks to recent developments, exploit pricing and difficulty are growing \cite{AOSP2018}, indicating that many common attacks can now be detected and protected against. However, especially with increasing incentives, malicious actors are looking for ways to bypass existing protections, and some threats, like app collusion, still can not be reliably detected nor defended against.
 
-% definition of collusion Asavoae2017
-% willing apps can work together in android AOSP2019b
+App collusion is secret collaboration between apps with malicious intent \cite{OEDcollusion, Asavoae2017}. Android system provides many documented unrestricted channels for apps to communicate with each other \cite{AOSP2019b}. Additionally, apps can use wide array of covert channels to achieve undetected communication \tocite{}. A malicious application that would be detected and blocked with state of the art security systems could be easily split into several applications, so that each of them would be categorised as benign when analysed separately \cite{Chen2018}. 
 
-% There has been some work in this area by several authors.
+Android app collusion is not a new concept \cite{Schlegel2011}, and multiple attempts have been made to develope a suitable detection system. \todo{brief overview of existing approaches}
 % Filtering
 % 	rule-based
 % 	machine learning
 % model based
 % runtime
 
-% limitations of prior work
-% only wild example not covered by existing solutions
-% extremely difficult issue
-% in this report a more 
+However, there still does not exists any robust and usable ways to detect app collusions. Most proposed solutions have large number of false positives due to inability to differentiate collusion from legitimate collaboration. Furthermore, the only known example of app collusion in the wild \cite{Blasco2016} would be out of scope for most current works, as the exponential explosion of having to analyse all combinations of billions\tocite{number of apps in play store} of apps has forced authors to focus on a very narrow subset of apps. Approaches attempting to overcome both of these issues have been infeasible thus far.
 
 \section{Description and definition of app collusion}
 
