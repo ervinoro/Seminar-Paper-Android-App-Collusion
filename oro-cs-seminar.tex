@@ -1,14 +1,15 @@
-\documentclass[article,oneside]{aaltoseries}
+\documentclass[article]{aaltoseries}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{IEEEtrantools}
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsfonts}
 \usepackage{todonotes}
+\reversemarginpar
 \usepackage{textcomp}
 \usepackage[numbers]{natbib}
 \newcommand{\TODO}[1]{\todo[inline]{#1}}
-\geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
+% \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
 
 % Use “\tocite{}” to get “citation needed” in document
 \newcounter{undefinedreferences}
@@ -20,6 +21,7 @@
 }
 
 \begin{document}
+
 \bstctlcite{BSTcontrol}
  
 %=========================================================
@@ -36,10 +38,10 @@
 %==========================================================
 
 \begin{abstract}
-	\TODO{abstract}
+\TODO{abstract}
 
-\vspace{3mm}
-\noindent KEYWORDS: \todo[inline, inlinewidth=5cm, noinlinepar]{list, of, key, words}
+% \vspace{3mm}
+% \noindent KEYWORDS: \todo[inline, inlinewidth=5cm, noinlinepar]{list, of, key, words}
 
 \end{abstract}
 
@@ -53,9 +55,9 @@ Android is estimated to be the most widely used operating system overall \cite{A
 
 Taking that into account, defending Android devices against malware is an active area of research. Thanks to recent developments, exploit pricing and difficulty are growing \cite{AOSP2018}, indicating that many common attacks can now be detected and protected against. However, especially with increasing incentives, malicious actors are looking for ways to bypass existing protections, and some threats, like app collusion, still can not be reliably detected nor defended against.
 
-App collusion is secret collaboration between apps with malicious intent \cite{OEDcollusion, Asavoae2017}. Android system provides many documented unrestricted channels for apps to communicate with each other \cite{AOSP2019b}. Additionally, apps can use wide array of covert channels to achieve undetected communication \tocite{}. A malicious application that would be detected and blocked with state of the art security systems could be easily split into several applications, so that each of them would be categorised as benign when analysed separately \cite{Chen2018}. 
+App collusion is secret collaboration between apps with malicious intent \cite{OEDcollusion, Asavoae2017}. Android system provides many documented unrestricted channels for apps to communicate with each other \cite{AOSP2019b}. Additionally, apps can use wide array of covert channels to achieve undetected communication \tocite{}. A malicious application that would be detected and blocked with state of the art security systems could be easily split into several applications, so that each of them would be categorized as benign when analysed separately \cite{Chen2018}. 
 
-Android app collusion is not a new concept \cite{Schlegel2011}, and multiple attempts have been made to develope a suitable detection system. \todo{brief overview of existing approaches}
+Android app collusion is not a new concept \cite{Schlegel2011}, and multiple attempts have been made to develope a suitable detection system. \TODO{brief overview of existing approaches}
 % Filtering
 % 	rule-based
 % 	machine learning
@@ -66,11 +68,11 @@ However, there still does not exists any robust and usable ways to detect app co
 
 \section{Description and definition of app collusion}
 
-The Oxford English Dictionary defines collusion as "Secret agreement or understanding for purposes of trickery or fraud; underhand scheming or working with another; deceit, fraud, trickery." \cite{OEDcollusion}. In this context, \cite{Asavoae2017} defines that app collusion is when, in performing a threat, several apps are working together. From this, three aspects of collusion can be derived:
+The Oxford English Dictionary defines collusion as ``Secret agreement or understanding for purposes of trickery or fraud; underhand scheming or working with another; deceit, fraud, trickery.'' \cite{OEDcollusion}. In this context, \cite{Asavoae2017} defines that app collusion is when, in performing a threat, several apps are working together. From this, three aspects of collusion can be derived:
 \begin{enumerate}
 	\item Collusion is secret. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \tocite{}.
-	\item Collusion is when all colluding parties are in agreement. A distinctly different but related concept is the “confused deputy” attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}. 
-	\item Collusion is with malicious intent. In the Android context, it would be the intention to violate one of its security goals, which are to protect application data, user data, and system resources (including the network) \cite{AOSP2019}. The Android Open Source Project also lists providing "application isolation from the system, other applications, and from the user" as a separate goal, but in this context, collusion would be when apps work together to break isolation with some third component, as for two willing parties there exist several legitimate communication channels \cite{AOSP2019b}.
+	\item Collusion is when all colluding parties are in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}. 
+	\item Collusion is with malicious intent. In the Android context, it would be the intention to violate one of its security goals, which are to protect application data, user data, and system resources (including the network) \cite{AOSP2019}. The Android Open Source Project also lists providing ``application isolation from the system, other applications, and from the user'' as a separate goal, but in this context, collusion would be when apps work together to break isolation with some third component, as for two willing parties there exist several legitimate communication channels \cite{AOSP2019b}.
 \end{enumerate}
 
 \TODO{many things affect, including non technical}
@@ -91,12 +93,12 @@ There is one known case of Android app collusion in the wild \cite{Blasco2016}. 
 
 %============================================================
 
-\nocite{*}
+% \nocite{*}
 \bibliographystyle{IEEEtranN}
 \bibliography{ieee,oro-cs-seminar}
-\TODO{remove nocite}
+% \TODO{remove nocite}
 
-\listoftodos
-\TODO{remove list of todos}
+% \listoftodos
+% \TODO{remove list of todos}
 
 \end{document}

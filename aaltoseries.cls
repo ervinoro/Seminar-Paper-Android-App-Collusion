@@ -780,7 +780,7 @@
 	}%
 	\renewcommand{\bibliography}[1]{%
 		{\fontsize{10pt}{10pt}\selectfont%
-		\cleardoublepage
+		\clearpage % TODO: \cleardoublepage
 		\phantomsection%
 		\AaltoSeriesBibliography{#1}}%
 	}%
