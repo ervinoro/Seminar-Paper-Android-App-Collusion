@@ -1,25 +1,31 @@
-\documentclass[article]{aaltoseries}
+\documentclass[article, oneside]{aaltoseries}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{IEEEtrantools}
 \usepackage[hidelinks]{hyperref}
+\usepackage[acronym]{glossaries}
 \usepackage{amsfonts}
 \usepackage{todonotes}
 \usepackage[normalem]{ulem}
 \usepackage{xcolor}
 \usepackage{xspace}
-\reversemarginpar
 \usepackage{textcomp}
+\usepackage{etoolbox}
 \usepackage[numbers]{natbib}
 \newcommand{\TODO}[1]{\todo[inline]{#1}}
 \newcommand{\jwnote}[1]{\todo[author=jorden,size=\small,inline,color=orange!60]{#1}}
 \newcommand{\jwnoteB}[1]{\todo[author=jorden,size=\small,color=orange!60]{#1}}
 \newcommand{\modif}[1]{\textcolor{blue}{#1}}
+\newcommand{\jwdiscuss}[1]{\todo[fancyline,author=jorden,size=\small,color=blue!50]{#1}}
+\newcommand{\discuss}[1]{\todo[fancyline,size=\small,color=blue!50]{#1}}
+
 % \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
+\geometry{left=1cm,right=7cm,marginparwidth=6.5cm,marginparsep=5mm} % TODO: remove
+% \reversemarginpar % for todo notes on the wider side
 
 % Use “\tocite{}” to get “citation needed” in document
 \newcommand\tocite[1]{
-	\todo{Citation needed: #1}
+	\todo{\ifstrempty{#1}{Citation needed}{#1}}
 	[\,\textbf{\color{red}!}\,]
 }
 
@@ -39,241 +45,78 @@
 
 \newcommand{\app}[1]{A\textsc{pp}$_{#1}$\xspace}
 
-\begin{document}
-
-\bstctlcite{BSTcontrol}
- 
-%=========================================================
+\newacronym{os}{OS}{operating system}
 
 \title{Android App Collusion}
 
+
 \author{Ervin Oro% Your first and last name: do _not_ add your student number
 \\\textnormal{\texttt{ervin.oro@aalto.fi}}} % Your Aalto e-mail address
-
 \affiliation{\textbf{Tutor}: Jorden Whitefield} % First and last name of your tutor
 
-\maketitle
+%==========================================================
 
+\begin{document}
+\bstctlcite{BSTcontrol}
+
+\maketitle
+\todo{set proper margins and document format}
+\discuss{hard vs soft wraps}
 %==========================================================
 
 \begin{abstract}
 \TODO{abstract}
 
-% \vspace{3mm}
-% \noindent KEYWORDS: \todo[inline, inlinewidth=5cm, noinlinepar]{list, of, key, words}
+\vspace{3mm}
+\noindent KEYWORDS: \todo[inline, inlinewidth=5cm, noinlinepar]{list, of, key, words}
 
 \end{abstract}
 
-
 %============================================================
-
 
 \section{Introduction}
 \label{sec:intro}
-%
-\jwnote{Need a more general introduction to mobile computing. Things to mention
-would be that there are two leading phone OS's iOS and Android. Focus of this
-report is Android. Mention the Android Open Source Project (ASOP) and give an
-executive summary of project.}
 
-Android is estimated to be the most widely used operating system \jwnoteB{(OS)}
-overall~\cite{AWSLLC2018, StatCounter2018}, running on more than 2 billion
-active devices~\cite{AOSP2018}. While this is not reflected by malware,
-%
-\jwnote{What is not reflected by malware?}
-%
-most of
-which still targets Windows, both the number and complexity of attacks against
-Android are increasing~\cite{AVTESTGH2018}.~\citeauthor{McAfee2018} estimates
-that revenues for mobile malware authors could be in the billion-dollar range by
-2020 \cite{McAfee2018}.
+\jwdiscuss{Need a more general introduction to mobile computing. Things to mention would be that there are two leading phone OS's iOS and Android. Focus of this report is Android.}
 
-\sout{Taking that into account,}
-%
-\modif{Given the lucrative business opportunity for cyber criminals,}
-%
-\sout{devices}
-%
-defending Android against malware is an active area of research. Thanks to
-recent developments,
-%
-\jwnote{What developments? Research efforts? Don't need to write anything but
-add some citations.}
-%
-exploit pricing and difficulty are growing~\cite{AOSP2018},
-indicating that many common attacks
-%
-\jwnoteB{Add citations to these common attacks. Can you add a category of attack
-and a few citations per category?}
-%
-can now be detected and protected against.
-However,
-%
-\sout{especially with increasing incentives,}
-%
-malicious actors are looking for
-ways to bypass existing protections, and
-%
-\sout{some}
-\modif{a number of}
-%
-threats,
-%
-\sout{like}
-\modif{e.g.,}
-%
-app collusion, can not be reliably detected nor defended against.
+Android is an \gls{os} that is primarily designed for mobile devices. With more than 2 billion active devices~\cite{AOSP2018}, it is estimated to be the most widely used \gls{os}, surpassing even Windows~\cite{AWSLLC2018, StatCounter2018}. Android is designed to be an open platform: developed and maintained by Google LLC, but largely released as the Android Open Source Project for everyone to study and build upon \cite{AOSP2019c}. It also includes support for apps - easily installable application packages that can be developed and distributed by anyone with very low barrier of entry.
 
-App collusion is \modif{a} secret collaboration between apps with malicious
-intent~\cite{OEDcollusion,Asavoae2017}.
-%
-\jwnote{citation 6 is strange here. From section two perhaps you could move up
-the quote/verbatim of the definition of collusion? Then with this general
-definition make it more specific to Android App Collusion.}
-%
-Android system provides many documented unrestricted channels for apps to
-communicate with each other~\cite{AOSP2019b}.
-%
-\jwnote{What is a channel? What types of channels exist (overt/covert)? I think
-it would be good to have a sentence on each channel type, and then add a forward
-reference to~\Sref{sec:methods}.}
-%
-Additionally, apps can use wide
-array of covert channels
-%
-\jwnote{Speak about covert channel here without explaining.}
-%
-to achieve undetected communication \tocite{}. A
-malicious application that would be detected and blocked with state of the art
-security systems could be easily split into several applications,
-%
-\jwnote{What could easily be split across multiple apps? It is not clear.}
-%
-so that each
-of them would be categorized as benign when analysed separately~\cite{Chen2018}.
+While this popularity of Android is not reflected by the proportion of malware attacks, most of which still target Windows, both the number and complexity of attacks against Android are increasing~\cite{AVTESTGH2018}.~\citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
 
+~\todo{proper paragraph about achievements in protection against malware}exploit pricing and difficulty are growing~\cite{AOSP2018}
 
-Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple
-attempts have been made to develop a suitable detection system. \TODO{brief
-overview of existing approaches}
-\jwnote{Mention the figure that literature
-does, i.e., problem is {$2^N$}, 2 apps and {$N$} other possibilities.}
+However, malicious actors are looking for ways to bypass existing protections, and a number of threats, e.g., app collusion, can not be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intent (\Sref{sec:def}). \jwdiscuss{What types of channels exist (overt/covert)? I think it would be good to have a sentence on each channel type} This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). A malicious app that would be detected and blocked with state of the art security systems could be easily split into several apps, \jwnoteB{What could easily be split across multiple apps? It is not clear.}\todo{the malicious app} so that each of them would be categorized as benign when analysed separately~\cite{Chen2018}.
+
+Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple attempts have been made to develop a suitable detection system. \TODO{brief overview of existing approaches based on \Sref{sec:approaches}}
+\jwdiscuss{Mention the figure that literature does, i.e., problem is {$2^N$}, 2 apps and {$N$} other possibilities.}
 % Filtering
 % 	rule-based
 % 	machine learning
 % model based
 % runtime
 
-However, there still does not exists any robust and usable ways to detect app
-collusions. Most proposed solutions have large number of false positives due to
-inability to differentiate collusion from legitimate collaboration.
-%
-\jwnote{what's the difference between collusion and collaboration? Be explicit
-here.}
-%
-Furthermore,
-the only known example of app collusion in the wild~\cite{Blasco2016}
-%
-\jwnote{Will this papers method be explained prior to making this point? If not
-then I don't understand what is out of scope.}
-%
-would be
-out of scope for most current works, as the exponential explosion of having to
-analyse all combinations of billions\tocite{number of apps in play store} of
-apps has forced authors to focus on a very narrow subset of threats. 
-%
-\sout{Approaches
-attempting to overcome both of these issues have been infeasible thus far.}
-\modif{State of the art Android App Collusion detection techniques are limited
-in their approach, and thus app collusion remains an open research challenge.}
-%
+However, there still does not exists any robust and usable ways to detect app collusions. Most proposed solutions have large number of false positives due to inability to differentiate collusion from legitimate collaboration. \jwdiscuss{what's the difference between collusion and collaboration? Be explicit here.} Furthermore, the only known example of app collusion in the wild~\cite{Blasco2016} \jwdiscuss{Will this papers method be explained prior to making this point? If not then I don't understand what is out of scope.} would be out of scope for most current works, as the exponential explosion\discuss{needs clarification?} of having to analyse all combinations of billions\tocite{number of apps in play store} of apps has forced authors to focus on a very narrow subset of threats. Finally, approaches attempting to overcome both of these issues have been computationally infeasible thus far. Therefore, app collusion remains an open research challenge.
 
-This report aims to provide
-%
-\sout{a more general}
-\modif{an}
-%
-overview of
-%
-\sout{the topic.}
-\modif{app collusion on the Android platform.}
-%
-\Sref{sec:def} discusses
-%
-\sout{the nature of}
-%
-app collusions in general,~\Sref{sec:methods} provides specific overview of
-methods that can be used for colluding on Android,~\Sref{sec:examples}
-%
-\sout{briefly}
-%
-describes known examples of colluding apps, and~\Sref{sec:approaches} gives
-a more in-depth systematic overview of approaches that have been taken to
-collusion detection
-%
-\sout{, as well as discusses their shortcomings.}
-\modif{and their limitations.}
+This report aims to provide an overview of app collusion on the Android platform as follows. \Sref{sec:def} discusses the nature of app collusions in general,~\Sref{sec:methods} provides specific overview of methods that can be used for colluding on Android,~\Sref{sec:examples} describes known examples of colluding apps, and~\Sref{sec:approaches} gives a more in-depth systematic overview of approaches that have been taken to collusion detection and their limitations.
 
-
+\newpage
 \section{Description and definition of app collusion}
 \label{sec:def}
-%
-The Oxford English Dictionary defines collusion as ``Secret agreement or
-understanding for purposes of trickery or fraud; underhand scheming or working
-with another; deceit, fraud, trickery.''~\cite{OEDcollusion}.
-\jwnote{I think this should be moved up to~\Sref{sec:intro}. This is a general
-definition and in section 2 onwards you should be more specific.}
 
-%
-\sout{In this context,~\cite{Asavoae2017} defines}
-\modif{As{\u{a}}voae et al.~\cite{Asavoae2017} define}
-%
-app collusion as the situation where several apps are
-working together in performing a threat. From this, three
-%
-\sout{aspects}
-\modif{properties}
-%
-of collusion can be
-%
-\sout{derived:}
-\modif{defined:}
-%
+The Oxford English Dictionary defines collusion as \jwdiscuss{I think this should be moved up to~\Sref{sec:intro}. This is a general definition and in section 2 onwards you should be more specific.} ``Secret agreement or understanding for purposes of trickery or fraud; underhand scheming or working with another; deceit, fraud, trickery.''~\cite{OEDcollusion}. \citeauthor{Asavoae2017}~\cite{Asavoae2017} define collusion for the case of Android apps as the situation where several apps are working together in performing a threat. From these definitions, three properties of collusion can be derived:\jwdiscuss{defined:}
 \begin{enumerate}
 	
-	\item Collusion is secret\jwnoteB{I don't understand what you mean. Please
-	clarify.}. Conversely, apps working together in
-	collaboration is common and encouraged practice when such collaboration is
-	well documented \tocite{}.
+	\item Colluding apps must be working together secretly. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \tocite{}.
 
-	\item Collusion is when all colluding parties are in agreement. A distinctly
-	different but related concept is the ``confused deputy'' attack, where one
-	app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The
-	confused deputy:(or why capabilities might have been invented. ACMSIGOPS
-	Operating Systems Review 22(4), 36–38 (1988)}. 
+	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}.
 
-	\item Collusion is with malicious intent. In the Android context, it would
-	be the intention to violate one of its security goals,
-	%
-	\jwnote{What security goals? Should there be a list of these goals earlier
-	or in section 1? I also wonder if it is worth mentioning OWASP Mobile top 10
-	security... \texttt{https://www.owasp.org/index.php/Mobile\_Top\_10\_2016-Top\_10}}
-	%
-	which are to protect
-	application data, user data, and system resources (including the network)
-	\cite{AOSP2019}. The Android Open Source Project also lists providing
-	``application isolation from the system, other applications, and from the
-	user'' as a separate goal, but in this context, collusion would be when apps
-	%
-	\sout{work together}
-	\modif{collude}
-	%
-	to break isolation with some third component, as for two
-	willing parties there exist several legitimate communication channels
-	\cite{AOSP2019b}.
-	\jwnote{What is a 3rd component? Is this an app or something else? Are two
-	willing parties, two apps?}
-
+	\item Colluding apps must have malicious intent. The intent of Android app collusion would then be to violate one of the security goals Android, which are defined in \cite{AOSP2019} as:
+	\jwdiscuss{I also wonder if it is worth mentioning OWASP Mobile top 10	security... \url{https://www.owasp.org/index.php/Mobile\_Top\_10\_2016-Top\_10}}
+	\begin{singleenums}
+		\item to protect app data, user data, and system resources (including the network),
+		\item to provide app isolation from the system, other apps, and the user.
+	\end{singleenums}
+	It is important to note that the second goal is not to enforce isolation, but merely to provide isolation for those who want it. As such, apps working together does not automatically violate this goal, but it would be a collusion when apps worked together to break isolation with some other non-content app, the system, or the user.
 \end{enumerate}
 
 \TODO{many things affect, including non technical}
@@ -284,57 +127,33 @@ of collusion can be
 \label{sec:methods}
 
 \TODO{Overt and covert channels}
-\jwnote{Anything here about Access Control policies? SEAndroid?}
+\jwdiscuss{Anything here about Access Control policies? SEAndroid?}
 % \subsection{Overt channels}
 % \subsection{Covert channels}
 
 \section{Examples of Android app collusion}
 \label{sec:examples}
-%
-\sout{A very widely cited example of collusion is an imaginary situation as follows.}
-\modif{Blah et al. [x] define an example of an Android app collusion as follows:}
-\jwnote{Make the points below a numbered list perhaps. Easier to follow. With a
-list of numbered steps I would then also think about if a nice diagram could be
-made, and numbered to correspond to each step described?}
-%
-One app
-%
-\modif{, \app{A},}
-%
-has access sensitive information, but no access to
-internet. Another app,
-%
-\modif{\app{B},}
-\sout{on the other hand,}
-%
-has access to internet, but no access
-to any sensitive information. Many authors \tocite{} argue that in this case,
-one app could pass information to the other one, which could in turn then
-exfiltrate the information. Some authors \tocite{} have extended this concept to
-also cover cases where data is passed to multiple apps before being finally
-exfiltrated. All current research focuses on detecting such situations.
+
+\TODO{Completely rewrite; include a diagram to illustrate}
+\sout{A very widely cited example of collusion is an imaginary situation as follows.} \modif{Blah et al. [x] define an example of an Android app collusion as follows:} \jwnote{Make the points below a numbered list perhaps. Easier to follow. With a list of numbered steps I would then also think about if a nice diagram could be made, and numbered to correspond to each step described?} One app \modif{, \app{A},} has access sensitive information, but no access to internet. Another app, \modif{\app{B},} \sout{on the other hand,} has access to internet, but no access to any sensitive information. Many authors \tocite{} argue that in this case, one app could pass information to the other one, which could in turn then exfiltrate the information. Some authors \tocite{} have extended this concept to also cover cases where data is passed to multiple apps before being finally exfiltrated. All current research focuses on detecting such situations.
 
 \jwnote{The steps are not clear as it is mixed in with discussion. Need to
 spend some time separating these.}
 
-There is one known case of Android app collusion in the wild~\cite{Blasco2016}.
-Interestingly enough, even though this example is also widely referred to
-\tocite{list some references}, it does not follow the pattern described above.
-\jwnote{This last paragraph is very informal and chatty. This is ok for the
-draft but would need to be rewritten.}
-\todo{short description of MoPlus SDK} 
+There is one known case of Android app collusion in the wild~\cite{Blasco2016}. Interestingly enough, even though this example is also widely referred to \tocite{list some references}, it does not follow the pattern described above. \jwnote{This last paragraph is very informal and chatty. This is ok for the draft but would need to be rewritten.} \todo{short description of MoPlus SDK} 
 
 \section{Existing methods for detecting collusions}
 \label{sec:approaches}
 
 %============================================================
 
-% \nocite{*}
+\nocite{*}
 \bibliographystyle{IEEEtranN}
 \bibliography{ieee,oro-cs-seminar}
-% \TODO{remove nocite}
+\TODO{format bibliography}
+\TODO{remove nocite}
 
-% \listoftodos
-% \TODO{remove list of todos}
+\listoftodos
+\TODO{remove list of todos}
 
 \end{document}
