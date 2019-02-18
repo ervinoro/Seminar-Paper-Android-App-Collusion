@@ -1,7 +1,12 @@
+\RequirePackage[]{silence}
+\WarningFilter{latex}{Marginpar on page}
+\WarningFilter{lcg}{Using an already existing counter rand}
 \documentclass[article, oneside]{aaltoseries}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{IEEEtrantools}
+\usepackage[hyphens]{url} % allow hyphens to break urls
+\Urlmuskip=0mu  plus 1mu % allow for some spacing inside urls
 \usepackage[hidelinks]{hyperref}
 \usepackage[acronym]{glossaries}
 \usepackage{amsfonts}
@@ -19,8 +24,8 @@
 \newcommand{\jwdiscuss}[1]{\todo[fancyline,author=jorden,size=\small,color=blue!50]{#1}}
 \newcommand{\discuss}[1]{\todo[fancyline,size=\small,color=blue!50]{#1}}
 
-% \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
-\geometry{left=1cm,right=7cm,marginparwidth=6.5cm,marginparsep=5mm} % TODO: remove
+\geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
+% \geometry{left=1cm,right=7cm,marginparwidth=6.5cm,marginparsep=5mm} % TODO: remove
 % \reversemarginpar % for todo notes on the wider side
 
 % Use “\tocite{}” to get “citation needed” in document
@@ -61,7 +66,6 @@
 
 \maketitle
 \todo{set proper margins and document format}
-\discuss{hard vs soft wraps}
 %==========================================================
 
 \begin{abstract}
@@ -77,58 +81,57 @@
 \section{Introduction}
 \label{sec:intro}
 
-\jwdiscuss{Need a more general introduction to mobile computing. Things to mention would be that there are two leading phone OS's iOS and Android. Focus of this report is Android.}
+Android is an \gls{os} that is primarily designed for mobile devices. With more than two billion active devices~\cite{AOSP2018}, it is estimated to be the most widely used \gls{os}, surpassing even Windows~\cite{AWSLLC2018, StatCounter2018}. Android is designed to be an open platform: developed and maintained by Google LLC, but largely released as the Android Open Source Project for everyone to study and build upon \cite{AOSP2019c}. It also includes support for apps, which are easily installable application packages that may extend the functionality of devices. Apps can be developed and distributed by anyone with very low barrier of entry.
 
-Android is an \gls{os} that is primarily designed for mobile devices. With more than 2 billion active devices~\cite{AOSP2018}, it is estimated to be the most widely used \gls{os}, surpassing even Windows~\cite{AWSLLC2018, StatCounter2018}. Android is designed to be an open platform: developed and maintained by Google LLC, but largely released as the Android Open Source Project for everyone to study and build upon \cite{AOSP2019c}. It also includes support for apps - easily installable application packages that can be developed and distributed by anyone with very low barrier of entry.
+While this popularity of Android is not reflected by the proportion of malware attacks, most of which still target Windows, both the number and complexity of attacks against Android are increasing~\cite{AVTESTGH2018}. This is especially troublesome as many people increasingly rely on their phones -- often to keep their personal data, online account credentials, money, and more. \citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
 
-While this popularity of Android is not reflected by the proportion of malware attacks, most of which still target Windows, both the number and complexity of attacks against Android are increasing~\cite{AVTESTGH2018}. This is especially troublesome as many people increasingly rely on their phones - often to keep their personal data, online account credentials, money, and more. \citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
+Given the increasing potential damage from Android malware, defending against it is an active area of research. Android uses a multi-layer security approach~\cite{AOSP2018}: Google regularly removes potentially harmful applications from its Play Store, and has developed Play Protect\footnote{\url{https://www.android.com/play-protect/}} to also scan applications from other sources. Additionally, Android's platform security has been enhanced over the years with features like SELinux protections\footnote{\url{https://source.android.com/security/selinux/}}, exploit mitigations\footnote{\url{https://lwn.net/Articles/695991/}}, privilege reductions\footnote{\url{https://android-developers.googleblog.com/2017/07/seccomp-filter-in-android-o.html}}, encryption, and Verified Boot. Recent versions of Android make use of hardware security features and receive regular updates. These measures have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
 
-Given the increasing potential damage from Android malware, defending against it is an active area of research. Android is using multi-layer security approach~\cite{AOSP2018}: Google regularly removes potentially harmful applications from its Play Store, and has developed Play Protect to also scan applications from other sources. Additionally, Android's platform security has been enhanced over the years with features like SELinux protections, exploit mitigations, encryption, and Verified Boot. Recent versions of Android make use of hardware security features and receive regular updates. These measures have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
-
-However, malicious actors are looking for ways to bypass existing protections, and a number of threats, e.g., app collusion, can not yet be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intent (\Sref{sec:def}). \jwdiscuss{What types of channels exist (overt/covert)? I think it would be good to have a sentence on each channel type} This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). A malicious app that would be detected and blocked with state of the art security systems could be easily split into several apps, \jwnoteB{What could easily be split across multiple apps? It is not clear.}\todo{the malicious app} so that each of them would be categorized as benign when analysed separately~\cite{Chen2018}.
+However, malicious actors are looking for ways to bypass existing protections, and a number of threats, e.g., app collusion, cannot yet be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intent  (\Sref{sec:def}). This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). Methods for apps to collude also exist on the iOS platform \cite{Deshotels2016}. Given a malicious app that would be detected and blocked with state of the art security systems, its functionality could be easily split into several apps, so that each of them would be categorized as benign when analysed separately~\cite{Chen2018}.
 
 Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple attempts have been made to develop a suitable detection system. \TODO{brief overview of existing approaches based on \Sref{sec:approaches}}
-\jwdiscuss{Mention the figure that literature does, i.e., problem is {$2^N$}, 2 apps and {$N$} other possibilities.}
 % Filtering
 % 	rule-based
 % 	machine learning
 % model based
 % runtime
 
-However, there still does not exists any robust and usable ways to detect app collusions. Most proposed solutions have large number of false positives due to inability to differentiate collusion from legitimate collaboration. \jwdiscuss{what's the difference between collusion and collaboration? Be explicit here.} Furthermore, the only known example of app collusion in the wild~\cite{Blasco2016} \jwdiscuss{Will this papers method be explained prior to making this point? If not then I don't understand what is out of scope.} would be out of scope for most current works, as the exponential explosion\discuss{needs clarification?} of having to analyse all combinations of billions\tocite{number of apps in play store} of apps has forced authors to focus on a very narrow subset of threats. Finally, approaches attempting to overcome both of these issues have been computationally infeasible thus far. Therefore, app collusion remains an open research challenge.
+However, there still does not exists any robust and usable ways to detect app collusions. Most proposed solutions have a large number of false positives due to an inability to differentiate collusion from legitimate collaboration. Furthermore, since the number of possible combinations is exponential in the number of apps, that is, $N^N$, most proposed solutions apply very aggressive filtering, causing only some malicious combinations to be included into analysis, and others to be reported as false negatives. Finally, approaches attempting to overcome both of these issues have been computationally infeasible thus far. Therefore, app collusion remains an open research challenge.
 
 This report aims to provide an overview of app collusion on the Android platform as follows. \Sref{sec:def} discusses the nature of app collusions in general,~\Sref{sec:methods} provides specific overview of methods that can be used for colluding on Android,~\Sref{sec:examples} describes known examples of colluding apps, and~\Sref{sec:approaches} gives a more in-depth systematic overview of approaches that have been taken to collusion detection and their limitations.
 
 \section{Description and definition of app collusion}
 \label{sec:def}
 
-The Oxford English Dictionary defines collusion as \jwdiscuss{I think this should be moved up to~\Sref{sec:intro}. This is a general definition and in section 2 onwards you should be more specific.} ``Secret agreement or understanding for purposes of trickery or fraud; underhand scheming or working with another; deceit, fraud, trickery.''~\cite{OEDcollusion}. \citeauthor{Asavoae2017}~\cite{Asavoae2017} define collusion for the case of Android apps as the situation where several apps are working together in performing a threat. From these definitions, three properties of collusion can be derived:\jwdiscuss{defined:}
+The Oxford English Dictionary defines collusion as ``Secret agreement or understanding for purposes of trickery or fraud; underhand scheming or working with another; deceit, fraud, trickery''~\cite{OEDcollusion}. \citeauthor{Asavoae2017}~\cite{Asavoae2017} define collusion for the case of Android apps as the situation where several apps are working together in performing a threat. According to these definitions, app collusion must have following three properties:
+
 \begin{enumerate}
 	
 	\item Colluding apps must be working together secretly. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \tocite{}.
 
 	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}.
 
-	\item Colluding apps must have malicious intent. The intent of Android app collusion would then be to violate one of the security goals Android, which are defined in \cite{AOSP2019} as:
+	\item Colluding apps must have malicious intent. The intent of Android app collusion would then be to violate one of Android's security goals, which are defined in \cite{AOSP2019} as:
 	\jwdiscuss{I also wonder if it is worth mentioning OWASP Mobile top 10	security... \url{https://www.owasp.org/index.php/Mobile\_Top\_10\_2016-Top\_10}}
 	\begin{singleenums}
 		\item to protect app data, user data, and system resources (including the network),
 		\item to provide app isolation from the system, other apps, and the user.
 	\end{singleenums}
-	It is important to note that the second goal is not to enforce isolation, but merely to provide isolation for those who want it. As such, apps working together does not automatically violate this goal, but it would be a collusion when apps worked together to break isolation with some other non-content app, the system, or the user.
+	It is important to note that the goal b is not to enforce isolation, but merely to provide isolation for those who want it. As such, apps working together do not automatically violate goal b, but it would be collusion if apps worked together to break isolation with some other non-content app, the system, or the user.
 \end{enumerate}
 
 \TODO{many things affect, including non technical}
 
 \TODO{difficult to distinguish}
 
+\TODO{alternative definition \cite{Xu2017}}
+
 \section{Methods for colluding}
 \label{sec:methods}
 
-\TODO{Overt and covert channels}
-\jwdiscuss{Anything here about Access Control policies? SEAndroid?}
-% \subsection{Overt channels}
-% \subsection{Covert channels}
+\TODO{Mention Access Control policies, SEAndroid}
+\subsection{Overt channels}
+\subsection{Covert channels}
 
 \section{Examples of Android app collusion}
 \label{sec:examples}
