@@ -131,9 +131,27 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 \section{Methods for colluding}
 \label{sec:methods}
 
-\TODO{Mention Access Control policies, SEAndroid}
+By default, all android apps run in separate sandboxes, and by default, all communication between sandboxes is blocked~\cite{AOSP2019b}. However, there are exceptions to both of these statements, as described below.
+
 \subsection{Overt channels}
+
+\citeauthor{AOSP2019b} describes officially allowed channels for inter-app communication in \cite{AOSP2019b} and \cite{AOSP2019e}. \todo{This entire subsection is based on data from these two sources. Is this kind of citation sufficient?}
+
+Apps published by the same entity may share a sandbox using the shared UID feature. In this case, there are no restrictions for their communication. They may use any of the traditional UNIX-type mechanisms, including filesystem, local sockets, or signals.
+
+When apps are running in different sandboxes, the Linux kernel prevents them from accessing each others processes or files. In older Android versions, apps had the ability to make their files world-accessible, opening up a channel that way, but this is forbidden on newer versions of Android. Apps can still access files on external storage, but this requires a user-granted permission, giving users some visibility into the fact that such communication channel may be used by the app.
+
+However, Android also provides a method for apps to communicate without any user-granted permission or visibility. This is enabled by a remote procedure call mechanism called binder. Any app can send any message to binder at any time, but other apps must explicitly start listening and accept incoming communications. Apps have three main ways to do that:
+\begin{enumerate}
+	\item Services. Apps may start services, which can provide interfaces that are directly accessible using binder.
+	\item Intent filters. Intents are simple message objects that represents an "intention" to do something. Apps may ask some part of them to be executed when an intent with certain properties matching their filter is initiated.
+	\item ContentProviders. Apps can define ContentProviders to expose some of their data.
+\end{enumerate}
+
+Binder provides an easy way for apps to communicate with each other, promoting openness and allowing separation of concerns. Examples include apps using an intent to ask the camera app to take a photo instead of asking camera control permission, and communication apps allowing other apps to share data through itself. Binder has a well-defined interface that could be theoretically monitored.
+
 \subsection{Covert channels}
+\TODO{Mention Access Control policies, SEAndroid}
 
 \section{Examples of Android app collusion}
 \label{sec:examples}
