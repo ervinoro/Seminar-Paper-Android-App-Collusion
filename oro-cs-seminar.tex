@@ -113,10 +113,12 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 
 	\item Colluding apps must have malicious intent. The intent of Android app collusion would then be to violate one of Android's security goals, which are defined in \cite{AOSP2019} as:
 	\jwdiscuss{I also wonder if it is worth mentioning OWASP Mobile top 10	security... \url{https://www.owasp.org/index.php/Mobile\_Top\_10\_2016-Top\_10}}
+
 	\begin{singleenums}
 		\item to protect app data, user data, and system resources (including the network),
 		\item to provide app isolation from the system, other apps, and the user.
 	\end{singleenums}
+	
 	It is important to note that the goal b is not to enforce isolation, but merely to provide isolation for those who want it. As such, apps working together do not automatically violate goal b, but it would be collusion if apps worked together to break isolation with some other non-content app, the system, or the user.
 \end{enumerate}
 

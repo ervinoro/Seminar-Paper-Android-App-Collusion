@@ -626,7 +626,7 @@
 			\parsep0mm\listparindent3mm%
 			\usecounter{enumii}%
 		}%
-		% \vskip\AaltoSeriesListSep%
+		\vskip\AaltoSeriesListSep%
 		\setlength{\itemsep}{\baselineskip}%
 	}{}%
 	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 3}{%
@@ -665,7 +665,7 @@
 	\setlength{\AaltoSeriesListSep}{\itemsep}%
 	\end{list}%
 	\addtocounter{AaltoSeriesEnumerateScope}{-1}%
-	% \noindent\ignorespacesafterend%
+	\noindent\ignorespacesafterend%
 }
 \newenvironment{singleitems}{%
 	\begin{itemize}%
