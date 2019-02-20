@@ -135,11 +135,11 @@ By default, all android apps run in separate sandboxes, and by default, all comm
 
 \subsection{Overt channels}
 
-\citeauthor{AOSP2019b} describes officially allowed channels for inter-app communication in \cite{AOSP2019b} and \cite{AOSP2019e}. \todo{This entire subsection is based on data from these two sources. Is this kind of citation sufficient?}
+\citeauthor{AOSP2019b} describes channels designed for inter-app communication in \cite{AOSP2019b} and \cite{AOSP2019e}. \todo{This entire subsection is based on data from these two sources. Is this kind of citation sufficient?}
 
 Apps published by the same entity may share a sandbox using the shared UID feature. In this case, there are no restrictions for their communication. They may use any of the traditional UNIX-type mechanisms, including filesystem, local sockets, or signals.
 
-When apps are running in different sandboxes, the Linux kernel prevents them from accessing each others processes or files. In older Android versions, apps had the ability to make their files world-accessible, opening up a channel that way, but this is forbidden on newer versions of Android. Apps can still access files on external storage, but this requires a user-granted permission, giving users some visibility into the fact that such communication channel may be used by the app.
+When apps are running in different sandboxes, the Linux kernel prevents them from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would have some visibility into the fact that such communication channels may be used by the app.
 
 However, Android also provides a method for apps to communicate without any user-granted permission or visibility. This is enabled by a remote procedure call mechanism called binder. Any app can send any message to binder at any time, but other apps must explicitly start listening and accept incoming communications. Apps have three main ways to do that:
 \begin{enumerate}
@@ -151,7 +151,18 @@ However, Android also provides a method for apps to communicate without any user
 Binder provides an easy way for apps to communicate with each other, promoting openness and allowing separation of concerns. Examples include apps using an intent to ask the camera app to take a photo instead of asking camera control permission, and communication apps allowing other apps to share data through itself. Binder has a well-defined interface that could be theoretically monitored.
 
 \subsection{Covert channels}
-\TODO{Mention Access Control policies, SEAndroid}
+
+In addition to channels that are meant for apps to communicate, a large amount of covert channels have been described. \citeauthor{Marforio2012}~\cite{Marforio2012} propose a classification of communication channels based on whether Application level APIs, \Gls{os} native calls, or Hardware functionalities are utilized. \citeauthor{Al-Haiqi2014}~\cite{Al-Haiqi2014} describe categorizing covert channels as either timing or storage channels. However, neither of these approaches can ultimately clearly and exhaustively classify all covert channels, which by their nature form an unbounded set. In this section, only some examples are provided.
+
+Apps can exchange information using the vibration settings \cite{Schlegel2011}. Any application can change the vibration settings without requiring specific permissions. Additionally, applications can subscribe to be notified every time the setting is changed. Similarly, volume setting can be used by apps to exchange information. While apps cannot subscribe to be notified when volume is changed and have to manually check the setting, volume setting has the benefit of having 8 different states, as opposed to the boolean vibration setting. These channels are invisible to users, as long as data transmission does not coincide with audio playback or receiving notifications.
+
+\citeauthor{Marforio2012}~\cite{Marforio2012} describe how data could be exchanged between apps by modifying and monitoring the number of threads, processor usage, and free space on filesystem. While at least some of the APIs they used have since been discontinued \cite{nn2017}, partially similar approaches are possible on modern Android versions as well due to their usefulness in legitimate scenarios. For example, free disk space can be queried through a different API on latest Android versions.
+
+System load can also be measured indirectly in order to transmit information \cite{Marforio2012}. In this scenario, transmitting app modulates data payload by varying the load on the system. Receiving app, on the other hand, repeatedly runs a CPU-intensive computation and measures the time it takes to complete, in order to infer, whether or not the transmitting app is loading the system or not. This approach was even shown to work when receiver is just a JavaScript in the browser and not a standalone app.
+
+Another approach is presented by \cite{Al-Haiqi2014}, where one app utilizes vibration motor to transmit data, and another app uses accelerometer readings to receive it. This is further developed by \cite{Qi2018}, who propose covert channels based on user behavior. Instead of using vibration motor, transmitting app could prompt the user to move their phone in certain ways, for example posing as a rally game, where user needs to turn their phone at specific times based on the track generated by the app.
+
+\TODO{Add a subsection conclusion paragraph}
 
 \section{Examples of Android app collusion}
 \label{sec:examples}
