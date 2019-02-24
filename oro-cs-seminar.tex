@@ -172,13 +172,22 @@ Another approach is presented by \citeauthor{Al-Haiqi2014}~\cite{Al-Haiqi2014}, 
 \section{Examples of Android app collusion}
 \label{sec:examples}
 
-\TODO{Completely rewrite; include a diagram to illustrate}
-\sout{A very widely cited example of collusion is an imaginary situation as follows.} \modif{Blah et al. [x] define an example of an Android app collusion as follows:} \JWNOTE{Make the points below a numbered list perhaps. Easier to follow. With a list of numbered steps I would then also think about if a nice diagram could be made, and numbered to correspond to each step described?} One app \modif{, \app{A},} has access sensitive information, but no access to internet. Another app, \modif{\app{B},} \sout{on the other hand,} has access to internet, but no access to any sensitive information. Many authors \tocite{} argue that in this case, one app could pass information to the other one, which could in turn then exfiltrate the information. Some authors \tocite{} have extended this concept to also cover cases where data is passed to multiple apps before being finally exfiltrated. All current research focuses on detecting such situations.
+A basic example of app collusion (\Fref{fig:sample}) is as follows:
+\begin{singleenums}
+	\item \app{A} obtains some private information.
+	\item \app{A} transmits the information to \app{B} using some overt or covert channel.
+	\item \app{B} exfiltrates the information over the internet.
+\end{singleenums}
 
-\JWNOTE{The steps are not clear as it is mixed in with discussion. Need to
-spend some time separating these.}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/Collusion1}
+	\caption{Structure of a basic app collusion example.}
+	\label{fig:sample}
+\end{figure}
 
-There is one known case of Android app collusion in the wild~\cite{Blasco2016}. Interestingly enough, even though this example is also widely referred to \tocite{list some references}, it does not follow the pattern described above. \JWNOTE{This last paragraph is very informal and chatty. This is ok for the draft but would need to be rewritten.} \todo{short description of MoPlus SDK} 
+An early example of this kind of collusion was described by \citeauthor{Schlegel2011}~\cite{Schlegel2011}. In their case, \app{A} was the Soundcomber app that obtained private information using the microphone. To avoid detection, the Soundcomber app did not have permission to access the internet, so they proposed to use a second app to exfiltrate the information. Similar hypothetical example is also described by \citeauthor{Asavoae2017}~\cite{Asavoae2017}, where \app{A} would be a contacts app with READ\_CONTACTS permission, and \app{B} would be a weather app with INTERNET permission.
+
 
 \section{Existing methods for detecting collusions}
 \label{sec:approaches}
