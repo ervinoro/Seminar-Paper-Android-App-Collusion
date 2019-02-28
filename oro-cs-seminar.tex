@@ -25,9 +25,10 @@
 {\textcolor{red}{\rule[0.5ex]{2pt}{0.8pt}}}\ULon}
 \newcommand{\discuss}[1]{\todo[size=\small,color=green!40]{#1}}
 
-\geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
+% \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
 % \geometry{left=1cm,right=7cm,marginparwidth=6.5cm,marginparsep=5mm} % TODO: remove
-% \reversemarginpar % for todo notes on the wider side
+\reversemarginpar % for todo notes on the wider side
+\geometry{marginparwidth=5cm,marginparsep=3mm} % TODO: remove
 
 % Use “\tocite{}” to get “citation needed” in document
 \newcommand\tocite[1]{
@@ -87,7 +88,7 @@ Android is an \gls{os} that is primarily designed for mobile devices, e.g., smar
 
 While this popularity of Android is not reflected by the proportion of malware attacks, most of which still target Windows, both the number and complexity of attacks against Android are increasing~\cite{AVTESTGH2018}. This is especially troublesome as many people increasingly rely on their smartphones -- often to store their personal data, online account credentials, money, and more. \citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
 
-Given the increasing potential damage from Android malware, defending against it is an active area of research. Android uses a multi-layer security approach, combining machine learning, platform security and secure hardware~\cite{AOSP2018}. Machine learning methods are utilised by Google Play Store to prevent uploading potentially harmful applications, and by Google Play Protect\footnote{\url{https://www.android.com/play-protect/}}\discuss{citation vs footnote} to scan apps locally on users' devices. Android's platform security has been enhanced over the years with the addition of multiple security features, for example, SELinux protections\footnote{\url{https://source.android.com/security/selinux/}}, exploit mitigations\footnote{\url{https://lwn.net/Articles/695991/}}, privilege reductions\footnote{\url{https://android-developers.googleblog.com/2017/07/seccomp-filter-in-android-o.html}}, and encryption. Recent versions of Android leverage hardware security features, including keystore and remote key attestation\footnote{\url{https://android-developers.googleblog.com/2017/09/keystore-key-attestation.html}}, and receive regular software updates. These security mechanisms have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
+Given the increasing potential damage from Android malware, defending against it is an active area of research. Android uses a multi-layer security approach, combining machine learning, platform security and secure hardware~\cite{AOSP2018}. Machine learning methods are utilised by Google Play Store to prevent uploading potentially harmful applications, and by Google Play Protect~\cite{AOSPplayprotect} to scan apps locally on users' devices. Android's platform security has been enhanced over the years with the addition of multiple security features, for example, SELinux protections~\cite{AOSPselinux}, exploit mitigations~\cite{Edge2016}, privilege reductions~\cite{Lawrence2017}, and encryption. Recent versions of Android leverage hardware security features, including keystore and remote key attestation~\cite{Willden2017}, and receive regular software updates. These security mechanisms have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
 
 However, malicious actors are continuously developing exploits to bypass existing protections, and a number of threats, e.g., app collusion, cannot yet be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intent  (\Sref{sec:def}). This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). Methods for apps to collude also exist on the iOS platform \cite{Deshotels2016}. Given a malicious app that would be detected and blocked with state of the art security systems, its functionality can be split into several apps, so that each of them would be categorised as benign when analysed separately~\cite{Chen2018}.
 
@@ -98,7 +99,7 @@ Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple att
 % model based
 % runtime
 
-Despite this, there are currently no robust and usable ways to detect app collusions. Most proposed solutions have a large number of false positives due to their inability to differentiate collusion from legitimate collaboration. Furthermore, since the number of possible combinations is exponential in the number of apps, that is, $N^N$\todo{explain why $N^N$}, most proposed solutions apply very aggressive filtering, causing only some malicious combinations to be included into analysis, and others to be reported as false negatives. \remove{Finally, }approaches attempting to overcome both of these issues have been computationally infeasible thus far. Therefore, app collusion remains an open research challenge.
+Despite this, there are currently no robust and usable ways to detect app collusions. Existing solutions have large number of false negatives, false positives, or they are infeasibly difficult to implement. The number of possible combinations of $N$ apps is $N^N$, and Google Play Store alone is reported to host more than 2.6 million apps~\cite{Statista2018}. Most proposed solutions therefore apply very aggressive filtering, causing only some malicious combinations to be included into analysis, and others to be reported as false negatives. Furthermore, most proposed solutions have a large number of false positives due to their inability to differentiate collusion from legitimate collaboration. Some have experimented with checking apps manually to determine their intent~\cite{Muttik2016}, but this demands even more aggressive filtering. Therefore, app collusion remains an open research challenge.
 
 This report aims to provide an overview of app collusion on the Android platform as follows. \Sref{sec:def} discusses the nature of app collusions in general,~\Sref{sec:methods} provides specific overview of methods that can be used for colluding on Android,~\Sref{sec:examples} describes known examples of colluding apps, and~\Sref{sec:approaches} gives a more in-depth systematic overview of approaches that have been taken to collusion detection and their limitations.
 
@@ -114,15 +115,13 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}.
 
 	\item Colluding apps must have malicious intent. The intent of Android app collusion would then be to violate one of Android's security goals, which are defined in \cite{AOSP2019} as:
-	\jwnote{I also wonder if it is worth mentioning OWASP Mobile top 10	security... \url{https://www.owasp.org/index.php/Mobile\_Top\_10\_2016-Top\_10}}
-
 	\begin{singleenums}
 		\item to protect app data, user data, and system resources (including the network),
 		\item to provide app isolation from the system, other apps, and the user.
 	\end{singleenums}
 \end{enumerate}
-	
-It is important to note that the goal 3(b) is not to enforce isolation, but \remove{merely }to provide isolation for those who require it. As such, apps working together do not automatically violate goal 3(b), but it would be collusion if apps worked together to break isolation with some other non-content app, the system, or the user.
+\\\todo{formatting}
+It is important to note that the goal 3(b) is not to enforce isolation, but to provide isolation for those who require it. As such, apps working together do not automatically violate goal 3(b), but it would be collusion if apps worked together to break isolation with some other non-content app, the system, or the user.
 
 \TODO{many things affect, including non technical}
 
@@ -146,11 +145,11 @@ When apps are running in different sandboxes, the Linux kernel prevents these sa
 
 However, Android also provides a method for apps to communicate without any user-granted permission or visibility. This is enabled by a remote procedure call mechanism called binder\todo{revisit after \sref{sec:approaches}: if it discusses more about binder; it needs to be introduces more - a short introduction to Android platform architecture with figure. See \url{https://developer.android.com/guide/platform}}. Any app can send messages to the binder arbitrarily, but other apps must explicitly start listening and accept incoming communications. The Android platform provides three main ways to do this:
 \begin{enumerate}
-	\item Services\tocite{read more}. Apps may start services, which can provide interfaces that are directly accessible using binder.
-	\item Intent filters\tocite{read more}. Intents are simple message objects that represents an "intention" to do something. Apps may ask some part of them to be executed when an intent with certain properties matching their filter is initiated.\jwnote{See \url{https://developer.android.com/guide/components/intents-filters}. Include Figure 1. Explicit/implicit intents. Look at warning boxes, some interesting advice.}
-	\item ContentProviders\tocite{read more}. Apps can define ContentProviders to expose some of their data.
-	\TODO{maybe add something about android platform architecture}
+	\item Services~\cite{AOSPservice}. Apps may start services, which can provide interfaces that are directly accessible using binder.
+	\item Intent filters~\cite{AOSPintents}. Intents are simple message objects that represents an "intention" to do something. Apps may ask some part of them to be executed when an intent with certain properties matching their filter is initiated.
+	\item ContentProviders~\cite{AOSPcontentproviders}. Apps can define ContentProviders to expose some of their data.
 \end{enumerate}
+\TODO{Maybe add something about android platform architecture. Figure 1. Explicit/implicit intents.}
 
 The binder provides an easy way for apps to communicate with each other, promoting openness and allowing separation of concerns. Examples include apps using an intent to ask the camera app to take a photo instead of asking camera control permission, and communication apps allowing other apps to share data through itself. Binder has a well-defined interface that could be monitored.
 
@@ -161,12 +160,12 @@ In addition to the overt channels, a large amount of covert channels have been d
 
 \citeauthor{Schlegel2011}~\cite{Schlegel2011} show that any application can change the vibrate setting and use intent filters to be notified every time the setting is changed without requiring specific permissions, therefore demonstrating that apps can create an information channel using the vibrate setting.  Similarly, the volume setting can be used. While apps cannot subscribe to be notified when volume is changed and have to manually check this setting, it has the benefit of having 8 different states, as opposed to the vibrate setting, which is a boolean value. These channels are invisible to users, as long as data transmission does not coincide with audio playback or receiving notifications.
 
-\citeauthor{Marforio2012}~\cite{Marforio2012} describe how data could be exchanged between colluding apps by modifying and monitoring the number of threads, processor usage, and free space on filesystem. While some of the APIs they used have been deprecated \cite{nn2017}, partially similar approaches are possible on modern Android versions as well. For example, free disk space can be queried through the StatFs\#getAvailableBlocksLong() API on latest Android versions \cite{AOSP2019reference}.\todo{signpost novel idea}
+\citeauthor{Marforio2012}~\cite{Marforio2012} describe how data could be exchanged between colluding apps by modifying and monitoring the number of threads, processor usage, and free space on filesystem. While some of the APIs they used have been deprecated \cite{nn2017}, partially similar approaches are possible on modern Android versions as well. For example, free disk space can be queried through the StatFs\#getAvailableBlocksLong() API on latest Android versions \cite{AOSP2019reference}.\todo{}%signpost novel idea
 
 The system load can also be measured indirectly to transmit information \cite{Marforio2012}. In this scenario, the transmitting app modulates data payload by varying the load on the system. The Receiving app then repeatedly runs a CPU-intensive computation and measures the time it takes to complete, in order to infer whether or not the transmitting app is loading the system or not. This approach was shown to work even when receiver is just some JavaScript in the browser and not an installed Android app.
 
 Another approach is presented by \citeauthor{Al-Haiqi2014}~\cite{Al-Haiqi2014}, where one app utilises the vibration motor to transmit data, and another app uses the accelerometer readings to receive that data. This is further developed by \citeauthor{Qi2018}~\cite{Qi2018}, who propose covert channels based on user behaviour. Instead of using the vibration motor, a transmitting app could prompt the user to move their phone in certain ways, for example, posing as a rally game where the user needs to turn their phone at specific times based on a track generated by the malicious app.
-
+\\
 \TODO{Add a subsection conclusion paragraph}
 
 \section{Examples of Android app collusion}
@@ -195,13 +194,13 @@ An early example of this kind of collusion was described by \citeauthor{Schlegel
 
 %============================================================
 
-\nocite{*}
+% \nocite{*}
 \bibliographystyle{IEEEtranN}
 \bibliography{ieee,oro-cs-seminar}
 \TODO{format bibliography}
-\TODO{remove nocite}
+% \TODO{remove nocite}
 
-\listoftodos
-\TODO{remove list of todos}
+% \listoftodos
+% \TODO{remove list of todos}
 
 \end{document}
