@@ -25,9 +25,9 @@
 {\textcolor{red}{\rule[0.5ex]{2pt}{0.8pt}}}\ULon}
 \newcommand{\discuss}[1]{\todo[size=\small,color=green!40]{#1}}
 
-% \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
+\geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
 % \geometry{left=1cm,right=7cm,marginparwidth=6.5cm,marginparsep=5mm} % TODO: remove
-\reversemarginpar % for todo notes on the wider side
+% \reversemarginpar % for todo notes on the wider side
 \geometry{marginparwidth=5cm,marginparsep=3mm} % TODO: remove
 
 % Use “\tocite{}” to get “citation needed” in document
@@ -90,7 +90,7 @@ While this popularity of Android is not reflected by the proportion of malware a
 
 Given the increasing potential damage from Android malware, defending against it is an active area of research. Android uses a multi-layer security approach, combining machine learning, platform security and secure hardware~\cite{AOSP2018}. Machine learning methods are utilised by Google Play Store to prevent uploading potentially harmful applications, and by Google Play Protect~\cite{AOSPplayprotect} to scan apps locally on users' devices. Android's platform security has been enhanced over the years with the addition of multiple security features, for example, SELinux protections~\cite{AOSPselinux}, exploit mitigations~\cite{Edge2016}, privilege reductions~\cite{Lawrence2017}, and encryption. Recent versions of Android leverage hardware security features, including keystore and remote key attestation~\cite{Willden2017}, and receive regular software updates. These security mechanisms have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
 
-However, malicious actors are continuously developing exploits to bypass existing protections, and a number of threats, e.g., app collusion, cannot yet be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intent  (\Sref{sec:def}). This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). Methods for apps to collude also exist on the iOS platform \cite{Deshotels2016}. Given a malicious app that would be detected and blocked with state of the art security systems, its functionality can be split into several apps, so that each of them would be categorised as benign when analysed separately~\cite{Chen2018}.
+However, malicious actors are continuously developing exploits to bypass existing protections, and a number of threats, e.g., app collusion, cannot yet be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intentions (\Sref{sec:def}). This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). Methods for apps to collude also exist on the iOS platform \cite{Deshotels2016}. Given a malicious app that would be detected and blocked with state of the art security systems, its functionality can be split into several apps, so that each of them would be categorised as benign when analysed separately~\cite{Chen2018}.
 
 Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple attempts have been made to develop a suitable detection system. \TODO{brief overview of existing approaches based on \Sref{sec:approaches}}
 % Filtering
@@ -99,7 +99,7 @@ Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple att
 % model based
 % runtime
 
-Despite this, there are currently no robust and usable ways to detect app collusions. Existing solutions have large number of false negatives, false positives, or they are infeasibly difficult to implement. The number of possible combinations of $N$ apps is $N^N$, and Google Play Store alone is reported to host more than 2.6 million apps~\cite{Statista2018}. Most proposed solutions therefore apply very aggressive filtering, causing only some malicious combinations to be included into analysis, and others to be reported as false negatives. Furthermore, most proposed solutions have a large number of false positives due to their inability to differentiate collusion from legitimate collaboration. Some have experimented with checking apps manually to determine their intent~\cite{Muttik2016}, but this demands even more aggressive filtering. Therefore, app collusion remains an open research challenge.
+Despite this, there are currently no robust and usable ways to detect app collusions. Existing solutions have large number of false negatives, false positives, or they are infeasibly difficult to implement. The number of possible combinations of $N$ apps is $N^N$, and Google Play Store alone is reported to host more than 2.6 million apps~\cite{Statista2018}. Most proposed solutions therefore apply very aggressive filtering, causing only some malicious combinations to be included into analysis, and others to be reported as false negatives. Furthermore, most proposed solutions have a large number of false positives due to their inability to differentiate collusion from legitimate collaboration. Some have experimented with checking apps manually to determine their intentions~\cite{Muttik2016}, but this demands even more aggressive filtering. Therefore, app collusion remains an open research challenge.
 
 This report aims to provide an overview of app collusion on the Android platform as follows. \Sref{sec:def} discusses the nature of app collusions in general,~\Sref{sec:methods} provides specific overview of methods that can be used for colluding on Android,~\Sref{sec:examples} describes known examples of colluding apps, and~\Sref{sec:approaches} gives a more in-depth systematic overview of approaches that have been taken to collusion detection and their limitations.
 
@@ -114,7 +114,7 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 
 	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}.
 
-	\item Colluding apps must have malicious intent. The intent of Android app collusion would then be to violate one of Android's security goals, which are defined in \cite{AOSP2019} as:
+	\item Colluding apps must have malicious intentions. The intentions of Android app collusion would then be to violate one of Android's security goals, which are defined in \cite{AOSP2019} as:
 	\begin{singleenums}
 		\item to protect app data, user data, and system resources (including the network),
 		\item to provide app isolation from the system, other apps, and the user.
@@ -132,7 +132,7 @@ It is important to note that the goal 3(b) is not to enforce isolation, but to p
 \section{Methods for colluding}
 \label{sec:methods}
 
-By default, all Android apps run in separate sandboxes~\cite{AOSP2019b}, which are based on user separation by the Linux kernel, and enhanced by SELinux and \texttt{seccomp}~\cite{AOSP2019e}. By default, all communication between sandboxes is blocked~\cite{AOSP2019b}, but apps can open certain communication channels or prevent being separated into different sandboxes altogether. Some channels, so-called overt channels, are designed to be used by apps to communicate, while others, so-called covert channels, utilise functionalities intended for other purposes. All channels discussed below require the participation of both parties, but some researchers have looked into ways to cross sandbox borders unilaterally, therefore breaking the goal 3(b) in \sref{sec:def}~\tocite{}.
+By default, all Android apps run in separate sandboxes~\cite{AOSP2019b}, which are based on user separation by the Linux kernel, and enhanced by SELinux and \texttt{seccomp}~\cite{AOSP2019e}. By default, all communication between sandboxes is blocked~\cite{AOSP2019b}, but apps can open certain communication channels or prevent being separated into different sandboxes altogether. Some channels, so-called overt channels, are designed to be used by apps to communicate, while others, so-called covert channels, utilise functionalities which were originally intended for other purposes. All channels discussed below require the participation of both parties, but some researchers have looked into ways to cross sandbox borders unilaterally, therefore breaking the goal 3(b) in \sref{sec:def}~\tocite{}.
 
 \subsection{Overt channels}
 \label{sec:overt}
@@ -141,12 +141,12 @@ By default, all Android apps run in separate sandboxes~\cite{AOSP2019b}, which a
 
 Apps published by the same entity may share a sandbox. In this case, there are no restrictions for their communication. These apps can use any of the traditional UNIX-type mechanisms, including filesystem, local sockets, or signals.
 
-When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would have some visibility into the fact that such communication channels may be used by the app.
+When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would know that such communication may take place.
 
 However, Android also provides a method for apps to communicate without any user-granted permission or visibility. This is enabled by a remote procedure call mechanism called binder\todo{revisit after \sref{sec:approaches}: if it discusses more about binder; it needs to be introduces more - a short introduction to Android platform architecture with figure. See \url{https://developer.android.com/guide/platform}}. Any app can send messages to the binder arbitrarily, but other apps must explicitly start listening and accept incoming communications. The Android platform provides three main ways to do this:
 \begin{enumerate}
 	\item Services~\cite{AOSPservice}. Apps may start services, which can provide interfaces that are directly accessible using binder.
-	\item Intent filters~\cite{AOSPintents}. Intents are simple message objects that represents an "intention" to do something. Apps may ask some part of them to be executed when an intent with certain properties matching their filter is initiated.
+	\item Intent filters~\cite{AOSPintents}. Intents are simple message objects that represents an intention to do something. Apps may ask some part of them to be executed when an intent with certain properties matching their filter is initiated.
 	\item ContentProviders~\cite{AOSPcontentproviders}. Apps can define ContentProviders to expose some of their data.
 \end{enumerate}
 \TODO{Maybe add something about android platform architecture. Figure 1. Explicit/implicit intents.}
@@ -156,7 +156,7 @@ The binder provides an easy way for apps to communicate with each other, promoti
 \subsection{Covert channels}
 \label{sec:covert}
 
-In addition to the overt channels, a large amount of covert channels have been discovered. \citeauthor{Marforio2012}~\cite{Marforio2012} propose a classification of communication channels based on whether Application level APIs, \Gls{os} native calls, or Hardware functionalities are utilised. \citeauthor{Al-Haiqi2014}~\cite{Al-Haiqi2014} describe categorising covert channels as either timing or storage channels. However, neither of these approaches provides clear boundaries in all cases nor covers all possible covert channels, which by their nature form an unbounded set. This section provides some examples of covert channels in Android.
+In addition to the overt channels, a large amount of covert channels have been discovered. \citeauthor{Marforio2012}~\cite{Marforio2012} propose a classification of communication channels based on whether Application level APIs, \Gls{os} native calls, or Hardware functionalities are utilised. \citeauthor{Al-Haiqi2014}~\cite{Al-Haiqi2014} describe categorising covert channels as either timing or storage channels. However, neither of these categorising approaches provide clear boundaries in all cases nor cover all possible covert channels, which by their nature form an unbounded set. This section provides some examples of covert channels in Android.
 
 \citeauthor{Schlegel2011}~\cite{Schlegel2011} show that any application can change the vibrate setting and use intent filters to be notified every time the setting is changed without requiring specific permissions, therefore demonstrating that apps can create an information channel using the vibrate setting.  Similarly, the volume setting can be used. While apps cannot subscribe to be notified when volume is changed and have to manually check this setting, it has the benefit of having 8 different states, as opposed to the vibrate setting, which is a boolean value. These channels are invisible to users, as long as data transmission does not coincide with audio playback or receiving notifications.
 
