@@ -76,11 +76,12 @@
   address   = {Cham},
   publisher = {Springer International Publishing},
   abstract  = {Mobile devices pose a particular security risk because they hold personal details and have capabilities potentially exploitable for eavesdropping. The Android operating system is designed with a number of built-in security features such as application sandboxing and permission-based access control. Unfortunately, these restrictions can be bypassed, without the user noticing, by colluding apps whose combined permissions allow them to carry out attacks that neither app is able to execute by itself. In this paper, we develop a software model-checking approach within the {\$}{\$}{\backslash}mathbb {\{}K{\}}{\$}{\$}Kframework that is capable to detect collusion. This involves giving an abstract, formal semantics to Android applications and proving that the applied abstraction principles lead to a finite state space.},
+  comment   = {collusion potential ignoring intent},
   doi       = {10.1007/978-3-319-94111-0_1},
   file      = {:Asavoae2018 - Software Model Checking for Mobile Security – Collusion Detection in K.pdf:PDF},
   isbn      = {978-3-319-94111-0},
   owner     = {Ervin Oro},
-  timestamp = {20-01-2019},
+  timestamp = {12-03-2019},
   url       = {https://link.springer.com/chapter/10.1007/978-3-319-94111-0_1},
 }
 
@@ -185,11 +186,12 @@
   journal   = {IEEE Transactions on Mobile Computing},
   year      = {2018},
   issn      = {1558-0660},
+  comment   = {Intent flow analysis},
   doi       = {10.1109/TMC.2018.2889495},
   file      = {:Elish2018 - Identifying Mobile Inter App Communication Risks.pdf:PDF},
   keywords  = {Security;Malware;Feature extraction;Mobile computing;Sensitivity;Complexity theory;Standards;Android ICC;inter-app analysis;malware collusion;static analysis;risk assessment},
   owner     = {Ervin Oro},
-  timestamp = {20-01-2019},
+  timestamp = {12-03-2019},
   url       = {https://ieeexplore.ieee.org/document/8587187},
 }
 
@@ -286,40 +288,13 @@
   url       = {https://issuetracker.google.com/issues/37140047},
 }
 
-@Misc{AOSP2019reference,
+@Misc{AOSPdeveloper,
   author    = {{Android Open Source Project}},
-  title     = {{API} reference},
+  title     = {{Android} developers},
   year      = {2019},
   owner     = {Ervin Oro},
-  timestamp = {24-02-2019},
-  url       = {https://developer.android.com/reference},
-}
-
-@Misc{AOSP2019e,
-  author    = {{Android Open Source Project}},
-  title     = {Application sandbox},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {18-02-2019},
-  url       = {https://source.android.com/security/app-sandbox},
-}
-
-@Misc{AOSP2019b,
-  author    = {{Android Open Source Project}},
-  title     = {Application security},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {28-01-2019},
-  url       = {https://source.android.com/security/overview/app-security},
-}
-
-@Misc{AOSPcontentproviders,
-  author    = {{Android Open Source Project}},
-  title     = {Content provider basics},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {28-02-2019},
-  url       = {https://developer.android.com/guide/topics/providers/content-provider-basics},
+  timestamp = {12-03-2019},
+  url       = {https://developer.android.com/},
 }
 
 @Misc{AOSPplayprotect,
@@ -331,57 +306,21 @@
   url       = {https://www.android.com/play-protect/},
 }
 
-@Misc{AOSPintents,
-  author    = {{Android Open Source Project}},
-  title     = {Intents and intent filters},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {28-02-2019},
-  url       = {https://developer.android.com/guide/components/intents-filters},
-}
-
-@Misc{AOSP2019c,
-  author    = {{Android Open Source Project}},
-  title     = {Legal notice},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {03-02-2019},
-  url       = {https://developer.android.com/legal},
-}
-
-@Misc{AOSP2019,
+@Misc{AOSPsecurity,
   author    = {{Android Open Source Project}},
   title     = {Security},
   year      = {2019},
   owner     = {Ervin Oro},
-  timestamp = {28-01-2019},
+  timestamp = {12-03-2019},
   url       = {https://source.android.com/security},
 }
 
-@Misc{AOSPselinux,
-  author    = {{Android Open Source Project}},
-  title     = {{S}ecurity-{E}nhanced {Linux} in {Android}},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {28-02-2019},
-  url       = {https://source.android.com/security/selinux/},
-}
-
-@Misc{AOSPservice,
-  author    = {{Android Open Source Project}},
-  title     = {Services overview},
-  year      = {2019},
-  owner     = {Ervin Oro},
-  timestamp = {28-02-2019},
-  url       = {https://developer.android.com/guide/components/services},
-}
-
-@Misc{AOSP2019d,
+@Misc{AOSP,
   author    = {{Android Open Source Project}},
   title     = {The {Android} source code},
   year      = {2019},
   owner     = {Ervin Oro},
-  timestamp = {03-02-2019},
+  timestamp = {12-03-2019},
   url       = {https://source.android.com/setup},
 }
 
@@ -489,7 +428,7 @@
 
 @InProceedings{Xu2017,
   author    = {Mengwei Xu and Yun Ma and Xuanzhe Liu and Felix Xiaozhu Lin and Yunxin Liu},
-  title     = {{AppHolmes}},
+  title     = {{AppHolmes}: detecting and characterizing app collusion among third-party {Android} markets},
   booktitle = {Proceedings of the 26th International Conference on World Wide Web - {WWW} {\textquotesingle}17},
   year      = {2017},
   publisher = {{ACM} Press},
@@ -497,7 +436,7 @@
   doi       = {10.1145/3038912.3052645},
   file      = {:Xu2017 - AppHolmes.pdf:PDF},
   owner     = {Ervin Oro},
-  timestamp = {18-02-2019},
+  timestamp = {12-03-2019},
   url       = {https://ieeexplore.ieee.org/abstract/document/7349085/},
 }
 
