@@ -143,7 +143,7 @@ The \citeauthor{AOSPsecurity}~\cite{AOSPsecurity} describes channels designed fo
 
 Apps published by the same entity may share a sandbox. In this case, there are no restrictions for their communication. These apps can use any of the traditional UNIX-type mechanisms, including filesystem, local sockets, or signals.
 
-When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. \todo{Point out that much of the literature references shared preferences} Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would know that such communication may take place.
+When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. Many works\tocite{} discuss the use of shared preferences to exchange information between apps, but since shared preferences relied internally on files being world-accessible, this approach is no longer viable. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would know that such communication may take place.
 
 However, Android also provides a method for apps to communicate without any user-granted permission or visibility. This is enabled by a remote procedure call mechanism called binder\todo{revisit after \sref{sec:approaches}: if it discusses more about binder; it needs to be introduces more - a short introduction to Android platform architecture with figure. See \url{https://developer.android.com/guide/platform}}. Any app can send messages to the binder arbitrarily, but other apps must explicitly start listening and accept incoming communications. The Android platform provides three main ways to do this:
 \begin{enumerate}
@@ -187,9 +187,11 @@ A basic example of app collusion (\Fref{fig:sample}) is as follows:
 	\label{fig:sample}
 \end{figure}
 
-An early example of this kind of collusion was described by \citeauthor{Schlegel2011}~\cite{Schlegel2011}. In their case, \app{A} was the Soundcomber app that obtained private information using the microphone. To avoid detection, the Soundcomber app did not have permission to access the internet, so they proposed to use a second app to exfiltrate the information. Similar hypothetical example is also described by \citeauthor{Asavoae2017}~\cite{Asavoae2017}, where \app{A} would be a contacts app with READ\_CONTACTS permission, and \app{B} would be a weather app with INTERNET permission.
+An early example of this kind of collusion was described by \citeauthor{Schlegel2011}~\cite{Schlegel2011}. In their case, \app{A} was the Soundcomber app that obtained private information using the microphone. To avoid detection, the Soundcomber app did not have permission to access the internet, so they proposed to use a second app to exfiltrate the information. Similar hypothetical example is also described by \citeauthor{Asavoae2017}~\cite{Asavoae2017}, where \app{A} would be a contacts app with READ\_CONTACTS permission, and \app{B} would be a weather app with INTERNET permission. However, no such examples have been reported in the wild.
 
-\TODO{MoPlus SDK}
+There is one known example of app collusion in the wild reported by \citeauthor{Blasco2016}~\cite{Blasco2016}. They noticed a set of apps from different vendors by manual review of apps that were previously labelled as potentially unwanted, and were capable of accessing shared preferences files from different apps. All of these apps included a library, known as MoPlus SDK, that was known to contain remote-control capability.
+
+The MoPlus SDK may be embedded into many different apps, with 20 such being identified by \cite{Blasco2016}. It can then open a local HTTP server allowing the attacker to abuse any permissions given to its host app. With potentially many instances of the MoPlus SDK running on the same device with different permissions, they would work together to guarantee that only the instance with highest level of permissions is the one that starts accepting remote commands. No sensitive information is exchanged between the apps, but still all three properties of app collusion are present.
 
 \section{Existing methods for detecting collusions}
 \label{sec:approaches}
@@ -210,6 +212,9 @@ An early example of this kind of collusion was described by \citeauthor{Schlegel
 No such work exists.
 
 People have looked into closing some covert channels, but it is not reasonable to assume that all covert channels can be found. Additionally, even today there exist known open covert channels.
+
+\section{Conclusion}
+\label{sec:conclusion}
 
 %============================================================
 
