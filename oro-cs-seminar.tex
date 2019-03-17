@@ -196,22 +196,52 @@ The MoPlus SDK may be embedded into many different apps, with 20 such being iden
 \section{Existing methods for detecting collusions}
 \label{sec:approaches}
 
-\subsection{Detecting collusion that uses overt channels}
+Attempts with various scopes and outcomes have been made to detect app collusion. Results range from relatively computationally easy but very coarse filters to very computationally expensive but more accurate filters. 
 
-\begin{itemize}
-	\item \subsubsection{Based on permissions/interfaces}
-	% rule-based and machine learning
-	\item \subsubsection{Based on control flow analysis}
-	% model-based and runtime
-	\item \subsubsection{Heuristics}
-	\item \subsubsection{Manual analysis}
-\end{itemize}
+\subsection{Based on permissions/interfaces}
 
-\subsection{Detecting collusion that uses covert channels}
+The simplest approach is to statically extract some features of apps, such as the set of permissions declared in manifest or the set of Android APIs called, and base the analysis purely on that. Large amounts of apps can quickly be analysed this way, but necessarily only rough estimations can be done since very little information about the app is actually used in decision making.
 
-No such work exists.
+For example, \citeauthor{Asavoae2016}~\cite{Asavoae2016} describe a filtering method based on app's API calls and the permissions declared in its manifest file. They define collusion as a pair of apps that satisfy the three conditions:
+\begin{enumerate}
+	\item First app has a permission that they classified as giving access to sensitive information.
+	\item Second app has a permission that they classified as giving app the ability to send information outside.
+	\item Finally, first app must be able to send, and second app able to receive on the same channel. They consider the following channels:
+	\begin{singleitems}
+		\item Intents (each action separately):\\
+			Send: API call to send intent exists in code\\
+			Receive: intent filter defined in manifest or registered in code
+		\item External storage:\\
+			Send: WRITE\_EXTERNAL\_STORAGE\\
+			Receive: READ\_EXTERNAL\_STORAGE
+		\item Shared preferences (each file separately):\\
+			Send: API call to write exists in code\\
+			Receive: API call to read exists in code
+	\end{singleitems}
+\end{enumerate}
+It is not clear from their description, but can be assumed, that they further ignore apps that match both first and second criteria, because otherwise their filter would simply detect any apps that can communicate using one of these channels. They claim that this approach over-approximates the set of colluding apps, while actually it must be noted that they only consider a narrow subset of app collusion, and for example MoPlus SDK would be labelled as benign by this approach.
 
-People have looked into closing some covert channels, but it is not reasonable to assume that all covert channels can be found. Additionally, even today there exist known open covert channels.
+\citeauthor{Chen2018}~\cite{Chen2018} propose a similar approach. First they notice that exists a machine learning algorithm that, given the set of all API calls in an app, can predict whether the app is malicious or not. For communication they only consider intents as a possible channel. For each app they detect which intents it can send and receive, and then they group together apps that could communicate with each other. Then to detect, whether a group of apps is benign or malicious, they pass the union of all API calls of the apps in the group to the aforementioned machine learning algorithm.
+
+Neither of these approaches can detect if apps actually communicate with each other, nor what kind of information is exchanged between apps if they do communicate. They both consider only limited channels (shared preferences is no longer viable as discussed in \sref{sec:overt}). These approaches have no information about the order of operations within apps.
+
+\subsection{Based on control flow analysis}
+
+A more accurate detection of collusion can be achieved when the actual code of apps is analysed to detect whether or not they communicate, and what kind of information can they exchange. Model-based and runtime approaches have been taken to that.
+
+\citeauthor{Asavoae2018}~\cite{Asavoae2018} describe analysing formal semantics of Android apps within the $\mathbb{K}$ framework. Similarly to \cite{Asavoae2016}, they still only consider information theft by detecting, if an API call obtaining sensitive information can be followed by an API call for sending an intent, or if receiving an intent can be followed by an API call publishing the information to the outside.
+
+Another approach is to modify the Android \gls{os} to track information flow at runtime. Example of this is TaintDroid \cite{Enck2014}, which can track information flows from sensitive sources to sensitive sinks system wide, but incurs $14\%$ CPU overhead doing so.
+
+Both of these approaches still over-approximate the set of communicating apps, because their data flow tracking only works on the function level. Additionally, neither of these approaches considers covert channels.
+
+\subsection{Other}
+
+\citeauthor{Muttik2016}~\cite{Muttik2016} proposes augmenting aforementioned approaches with additional heuristic rules. He argues that colluding apps can be also detected by indirect signals, for example if apps come from the same source, explicitly encourage co-installation, are frequently installed together, use similar libraries, etc. Furthermore, he notes that signals like publication date, app market and installation method can be used. Finally, \citeauthor{McAfee2016} also claims to use manual review and reverse engineering to make final decisions about apps.
+
+None of the above approaches have been able to detect collusion using covert channels. People have looked into closing some covert channels, but it is not reasonable to assume that all covert channels can be found. Additionally, even today there exist known open covert channels.
+
+Already in 2016 \citeauthor{McAfee2016} claimed that their product is able to detect colluding mobile apps and stop them from running \cite{McAfee2016}. However, based on known information about the state of the art, this is unlikely to be entirely true.
 
 \section{Conclusion}
 \label{sec:conclusion}
