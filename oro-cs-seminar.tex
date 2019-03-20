@@ -86,18 +86,13 @@
 
 Android is an \gls{os} that is primarily designed for mobile devices, e.g., smartphones and tablets. With more than two billion active devices~\cite{AOSP2018}, it is estimated to be the most widely used \gls{os}, surpassing even Microsoft Windows~\cite{AWSLLC2018, StatCounter2018}. Android is designed to be an open platform: developed and maintained by Google LLC, but largely released as the \gls{aosp} for everyone to study and evaluate \cite{AOSP}. The Android \gls{os} includes support for apps, which are easily installable application packages that can extend the functionality of devices. Apps can be developed and distributed by anyone with very low barrier of entry.
 
-While this popularity of Android is not reflected by the proportion of malware attacks, most of which still target Windows, both the number and complexity of attacks against Android are increasing~\cite{AVTESTGH2018}. This is especially troublesome as many people increasingly rely on their smartphones -- often to store their personal data, online account credentials, money, and more. \citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
+While this popularity of Android is not reflected by the proportion of malware attacks, most of which still target Windows, both the number and complexity of attacks against Android are increasing~\cite{AVTESTGH2018}\todo{graph from this source could be added}. This is especially troublesome as many people increasingly rely on their smartphones -- often to store their personal data, online account credentials, money, and more. \citeauthor{McAfee2018} estimates that revenues for mobile malware authors could be in the billion-dollar range by 2020 \cite{McAfee2018}.
 
-Given the increasing potential damage from Android malware, defending against it is an active area of research. Android uses a multi-layer security approach, combining machine learning, platform security and secure hardware~\cite{AOSP2018}. Machine learning methods are utilised by Google Play Store to prevent uploading potentially harmful applications, and by Google Play Protect~\cite{AOSPplayprotect} to scan apps locally on users' devices. Android's platform security has been enhanced over the years with the addition of multiple security features, for example, SELinux protections~\cite[\href{https://source.android.com/security/selinux}{``Security-Enhanced Linux in Android''}]{AOSPsecurity}, exploit mitigations~\cite{Edge2016}, privilege reductions~\cite{Lawrence2017}, and encryption. Recent versions of Android leverage hardware security features, including keystore and remote key attestation~\cite{Willden2017}, and receive regular software updates. These security mechanisms have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
+Given the increasing potential damage from Android malware, defending against it is an active area of research. Android uses a \todo{figure depicting multi-layer security could be added}multi-layer security approach, combining machine learning, platform security and secure hardware~\cite{AOSP2018}. Machine learning methods are utilised by Google Play Store to prevent uploading potentially harmful applications, and by Google Play Protect~\cite{AOSPplayprotect} to scan apps locally on users' devices. Android's platform security has been enhanced over the years with the addition of multiple security features, for example, SELinux protections~\cite[\href{https://source.android.com/security/selinux}{``Security-Enhanced Linux in Android''}]{AOSPsecurity}, exploit mitigations~\cite{Edge2016}, privilege reductions~\cite{Lawrence2017}, and encryption. Recent versions of Android leverage hardware security features, including keystore and remote key attestation~\cite{Willden2017}, and receive regular software updates. These security mechanisms have been partially successful, as exploit pricing and difficulty are growing by some estimates~\cite{AOSP2018}.
 
 However, malicious actors are continuously developing exploits to bypass existing protections, and a number of threats, e.g., app collusion, cannot yet be reliably detected nor defended against. App collusion is a secret collaboration between apps with malicious intentions (\Sref{sec:def}). This can be facilitated by any of the numerous ways for apps to communicate with each other that the Android system provides (\Sref{sec:methods}). Methods for apps to collude also exist on the iOS platform \cite{Deshotels2016}. Given a malicious app that would be detected and blocked with state of the art security systems, its functionality can be split into several apps, so that each of them would be categorised as benign when analysed separately~\cite{Chen2018}.
 
-Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple attempts have been made to develop a suitable detection system. \TODO{brief overview of existing approaches based on \Sref{sec:approaches}}
-% Filtering
-% 	rule-based
-% 	machine learning
-% model based
-% runtime
+Android app collusion is not a new concept~\cite{Schlegel2011}, and multiple attempts have been made to develop suitable detection systems (\Sref{sec:approaches}). Computationally simple but very coarse filters have been developed based on statically extracted features of apps \cite{Asavoae2016, Chen2018}, while computationally expensive and more accurate filters have used formal modelling of Android apps \cite{Asavoae2018} or modified versions of the Android \gls{os} \cite{Enck2014} to track information flows. Heuristic approaches and manual analysis has also been proposed \cite{Muttik2016}.
 
 Despite this, there are currently no robust and usable ways to detect app collusions. Existing solutions have large number of false negatives, false positives, or they are infeasibly difficult to implement. The number of possible combinations of $N$ apps is $N^N$, and Google Play Store alone is reported to host more than 2.6 million apps~\cite{Statista2018}. Most proposed solutions therefore apply very aggressive filtering, causing only some malicious combinations to be included into analysis, and others to be reported as false negatives. Furthermore, most proposed solutions have a large number of false positives due to their inability to differentiate collusion from legitimate collaboration. Some have experimented with checking apps manually to determine their intentions~\cite{Muttik2016}, but this demands even more aggressive filtering. Therefore, app collusion remains an open research challenge.
 
@@ -112,7 +107,7 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 
 \begin{enumerate}
 	
-	\item Colluding apps must be working together secretly. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \tocite{}.
+	\item Colluding apps must be working together secretly. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \cite[\href{https://developer.android.com/training/basics/intents}{``Interacting with Other Apps''}]{AOSPdeveloper}.
 
 	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}.
 
@@ -191,6 +186,8 @@ An early example of this kind of collusion was described by \citeauthor{Schlegel
 
 There is one known example of app collusion in the wild reported by \citeauthor{Blasco2016}~\cite{Blasco2016}. They noticed a set of apps from different vendors by manual review of apps that were previously labelled as potentially unwanted, and were capable of accessing shared preferences files from different apps. All of these apps included a library, known as MoPlus SDK, that was known to contain remote-control capability.
 
+\TODO{Add figure depicting the MoPlus SDK}
+
 The MoPlus SDK may be embedded into many different apps, with 20 such being identified by \cite{Blasco2016}. It can then open a local HTTP server allowing the attacker to abuse any permissions given to its host app. With potentially many instances of the MoPlus SDK running on the same device with different permissions, they would work together to guarantee that only the instance with highest level of permissions is the one that starts accepting remote commands. No sensitive information is exchanged between the apps, but still all three properties of app collusion are present.
 
 \section{Existing methods for detecting collusions}
@@ -242,11 +239,9 @@ Already in 2016 \citeauthor{McAfee2016} claimed that their product is able to de
 
 %============================================================
 
-\nocite{*}
 \bibliographystyle{IEEEtranN}
 \bibliography{ieee,oro-cs-seminar}
-\TODO{format bibliography}
-\TODO{remove nocite}
+\TODO{format bibliography - remove urls from non-online sources}
 
 \listoftodos
 \TODO{remove list of todos}
