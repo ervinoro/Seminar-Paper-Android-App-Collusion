@@ -54,6 +54,7 @@
 
 \newacronym{os}{OS}{operating system}
 \newacronym{aosp}{AOSP}{Android Open Source Project}
+\newacronym{vm}{VM}{virtual machine}
 
 \title{Android App Collusion}
 
@@ -193,9 +194,10 @@ The MoPlus SDK may be embedded into many different apps, with 20 such being iden
 \section{Existing methods for detecting collusions}
 \label{sec:approaches}
 
-Attempts with various scopes and outcomes have been made to detect app collusion. Results range from relatively computationally easy but very coarse filters to very computationally expensive but more accurate filters. 
+Attempts with various scopes and outcomes have been made to detect app collusion. Results range from relatively computationally easy but very coarse filters to more accurate but very expensive approaches.
 
 \subsection{Based on permissions/interfaces}
+\label{sec:filter}
 
 The simplest approach is to base the analysis on statically extracted features of apps, such as the set of permissions declared in their manifests or the set of Android APIs they import. This way large amounts of apps can be quickly scanned, but necessarily only rough estimations can be made, since very little information about the app is actually used in decision making.
 
@@ -207,26 +209,26 @@ For example, \citeauthor{Asavoae2016}~\cite{Asavoae2016} describe a filtering me
 	\begin{singleitems}
 		\item Intents (each action separately)
 		\item External storage
-		\item Shared preferences (each file separately)
 	\end{singleitems}
+	(They also consider shared preferences, each file separately, but this is now deprecated: \Sref{sec:overt})
 \end{enumerate}
-It is not clear from their description, but can be assumed, that they further ignore apps that match both first and second criteria, because otherwise their filter would simply detect any app pairs that can communicate using one of these channels. They claim that this approach over-approximates the set of colluding apps, while actually it must be noted that they only consider a narrow subset of app collusions, and for example the MoPlus SDK would be labelled as benign by this approach.
+It is not clear from their description, but can be assumed, that they further ignore apps that match both first and second criteria, because otherwise their filter would simply detect any app pairs that can communicate using one of these channels. They claim that this approach over-approximates the set of colluding apps, while actually it must be noted that they only consider a narrow subset of app collusions, and, for example, the MoPlus SDK would be labelled as benign by this approach.
 
 \citeauthor{Chen2018}~\cite{Chen2018} propose a similar approach. First, they notice that exists a machine learning algorithm that, given the set of all API calls in an app, can predict whether the app is malicious or not. For communication they only consider intents as a possible channel. For each app they detect which intents it can send and receive, and then they group together apps that could communicate with each other. Finally, to detect, whether a group of apps is benign or malicious, they pass the union of all API calls of the apps in the group to the aforementioned machine learning algorithm.
 
-Neither of these approaches can detect if apps actually communicate with each other, nor what kind of information is exchanged between apps if they do communicate. They both consider only limited channels (shared preferences is no longer viable as discussed in \sref{sec:overt}). These approaches use no information about the order of operations within apps.
+Neither of these approaches can detect if apps actually communicate with each other, nor what kind of information is exchanged between apps if they do communicate, since they use no information about the order of operations within apps. They both consider only limited overt channels.
 
 \subsection{Based on control flow analysis}
+\label{sec:flow}
 
-A more accurate detection of collusion can be achieved when the actual code of apps is analysed to detect whether or not they communicate, and what kind of information can they exchange. Model-based and runtime approaches have been taken to that.
+A more accurate detection of collusion can be achieved when the code of apps is also analysed to detect whether or not they communicate, and what kind of information can they exchange. Model-based and runtime approaches have been taken to that.
 
-\citeauthor{Asavoae2018}~\cite{Asavoae2018} describe analysing formal semantics of Android apps within the $\mathbb{K}$ framework. Similarly to \cite{Asavoae2016}, they still only consider information theft by detecting, if an API call obtaining sensitive information can be followed by an API call for sending an intent, or if receiving an intent can be followed by an API call publishing the information to the outside.
+\citeauthor{Asavoae2018}~\cite{Asavoae2018} describe a method checking, whether information theft through collusion exists within the set of possible control flows for an app. They propose annotating each object with current app ID and boolean ``sensitive'' when it is returned by one of predefined Android APIs. Whenever an object is used, its sensitivity and app ID values are propagated to all resulting objects. Input set of apps is considered to be colluding if an object marked sensitive is passed to one of predefined exporting Android APIs so that the current app ID is different to the app ID from the object. They explore analysing concrete semantics, in which case the analysis takes longer, or even forever when the app code contains any loops, and propose a abstraction of Android app semantics, which is less accurate, but guaranteed to provide an answer. They only consider intent based inter-app communication.
 
-Another approach is to modify the Android \gls{os} to track information flow at runtime. Example of this is TaintDroid \cite{Enck2014}, which can track information flows from sensitive sources to sensitive sinks system wide, but incurs $14\%$ CPU overhead doing so.
-
-Both of these approaches still over-approximate the set of communicating apps, because their data flow tracking only works on the function level. Additionally, neither of these approaches considers covert channels.
+Another approach is to modify the Android \gls{os} to track information flow at runtime. Example of this is TaintDroid \cite{Enck2014}, which can track information flows from sensitive sources to sensitive sinks system wide, but incurs $14\%$ CPU overhead doing so. They use variable-level label tracking within app code (by augmenting the Java \gls{vm}), message-level tracking in Binder, method-level tracking for native system libraries, and file-level tracking. Therefore, this approach is only capable of tracking information flow within Java code, intents, Android API calls, and files, but native code is not tracked (authors here approached this by banning all native components in apps, breaking $5\%$ of apps by some estimates). Use of labels is similar to \cite{Asavoae2018}, but amount of false positives is much smaller, because corresponding exit state must be actually reached for it to be reported. False negatives may be caused when labels are not propagated through covert channels, and false positives when label propagation is overly conservative.
 
 \subsection{Other}
+\label{sec:othermethods}
 
 None of the above approaches have been able to detect collusion using covert channels. People have looked into closing some covert channels, but it is not reasonable to assume that all covert channels can be found. Additionally, even today there exist known open covert channels.
 
