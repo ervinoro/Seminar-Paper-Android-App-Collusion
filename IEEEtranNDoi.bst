@@ -142,7 +142,7 @@ FUNCTION {default.name.latex.cmd}{ "" }
 
 
 % The default DOI prefix.
-FUNCTION {default.name.doi.prefix}{ "" }
+FUNCTION {default.name.doi.prefix}{ "doi:" }
 
 
 % The default URL prefix.
@@ -1142,7 +1142,7 @@ FUNCTION {begin.bib}
   write$ newline$
   "\providecommand{\natexlab}[1]{#1}"
   write$ newline$
-  "\providecommand{\doi}[1]{DOI:#1}"
+  "\providecommand{\doi}[1]{#1}"
   write$ newline$
   "\providecommand{\url}[1]{#1}"
   write$ newline$
@@ -1983,8 +1983,8 @@ FUNCTION {format.doi}
     { this.to.prev.status
       this.status.std
       cap.yes 'status.cap :=
-      name.doi.prefix " " *
-      "\href{http://dx.doi.org/\doi{" * doi * "}}{\doi{" * doi * "}}" *
+      "\href{http://dx.doi.org/\doi{" doi * "}}{" * name.doi.prefix *
+      "\doi{" * doi * "}}" *
       punct.no 'this.status.punct :=
       punct.period 'prev.status.punct :=
       space.normal 'this.status.space :=

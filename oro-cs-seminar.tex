@@ -28,7 +28,7 @@
 \geometry{left=4cm,right=4cm,marginparwidth=3.5cm,marginparsep=5mm} % TODO: remove
 % \geometry{left=1cm,right=7cm,marginparwidth=6.5cm,marginparsep=5mm} % TODO: remove
 % \reversemarginpar % for todo notes on the wider side
-\geometry{marginparwidth=5cm,marginparsep=3mm} % TODO: remove
+% \geometry{marginparwidth=5cm,marginparsep=3mm} % TODO: remove
 
 % Use “\tocite{}” to get “citation needed” in document
 \newcommand\tocite[1]{
@@ -110,7 +110,7 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 	
 	\item Colluding apps must be working together secretly. Conversely, apps working together in collaboration is common and encouraged practice when such collaboration is well documented \cite[\href{https://developer.android.com/training/basics/intents}{``Interacting with Other Apps''}]{AOSPdeveloper}.
 
-	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \tocite{Hardy, N.: The confused deputy:(or why capabilities might have been invented. ACMSIGOPS Operating Systems Review 22(4), 36–38 (1988)}.
+	\item All colluding apps must be in agreement. A distinctly different but related concept is the ``confused deputy'' attack, where one app mistakenly exposes itself to other installed apps \cite{Hardy1988}.
 
 	\item Colluding apps must have malicious intentions. The intentions of Android app collusion would then be to violate one of Android's security goals, which are defined in \cite{AOSPsecurity} as:
 	\begin{singleenums}
@@ -118,7 +118,7 @@ The Oxford English Dictionary defines collusion as ``Secret agreement or underst
 		\item to provide app isolation from the system, other apps, and the user.
 	\end{singleenums}
 \end{enumerate}
-\\\todo{formatting}
+
 It is important to note that the goal 3(b) is not to enforce isolation, but to provide isolation for those who require it. As such, apps working together do not automatically violate goal 3(b), but it would be collusion if apps worked together to break isolation with some other non-content app, the system, or the user.
 
 \TODO{many things affect, including non technical}
@@ -130,7 +130,8 @@ It is important to note that the goal 3(b) is not to enforce isolation, but to p
 \section{Methods for colluding}
 \label{sec:methods}
 
-By default, all Android apps run in separate sandboxes~\cite[\href{https://source.android.com/security/overview/app-security}{``Application security''}]{AOSPsecurity}, which are based on user separation by the Linux kernel, and enhanced by SELinux and \texttt{seccomp}~\cite[\href{https://source.android.com/security/app-sandbox}{``Application Sandbox''}]{AOSPsecurity}. By default, all communication between these sandboxes is blocked, but apps can open certain communication channels or prevent being separated into different sandboxes altogether. Some channels, so-called overt channels, are designed to be used by apps to communicate, while others, so-called covert channels, utilise functionalities which were originally intended for other purposes. All channels discussed below require the participation of both parties, but some researchers have looked into ways to cross sandbox borders unilaterally, therefore breaking the goal 3(b) in \sref{sec:def}~\tocite{}.
+By default, all Android apps run in separate sandboxes~\cite[\href{https://source.android.com/security/overview/app-security}{``Application security''}]{AOSPsecurity}, which are based on user separation by the Linux kernel, and enhanced by SELinux and \texttt{seccomp}~\cite[\href{https://source.android.com/security/app-sandbox}{``Application Sandbox''}]{AOSPsecurity}. By default, all communication between these sandboxes is blocked, but apps can open certain communication channels or prevent being separated into different sandboxes altogether. Some channels, so-called overt channels, are designed to be used by apps to communicate, while others, so-called covert channels, utilise functionalities which were originally intended for other purposes.
+% All channels discussed below require the participation of both parties, but some researchers have looked into ways to cross sandbox borders unilaterally, therefore breaking the goal 3(b) in \sref{sec:def}~\tocite{}.
 
 \subsection{Overt channels}
 \label{sec:overt}
@@ -139,7 +140,7 @@ The \citeauthor{AOSPsecurity}~\cite{AOSPsecurity} describes channels designed fo
 
 Apps published by the same entity may share a sandbox. In this case, there are no restrictions for their communication. These apps can use any of the traditional UNIX-type mechanisms, including filesystem, local sockets, or signals.
 
-When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. Many works\tocite{} discuss the use of shared preferences to exchange information between apps, but since shared preferences relied internally on files being world-accessible, this approach is no longer viable. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would know that such communication may take place.
+When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing each other's processes or files. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, but newer versions of Android forbid this using SELinux mandatory access control rules. Many works \cite{Bhandari2017, Asavoae2017} discuss the use of shared preferences to exchange information between apps, but since shared preferences relied internally on files being world-accessible, this approach is no longer viable. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would know that such communication may take place.
 
 However, Android also provides a method for apps to communicate without any user-granted permission or visibility. This is enabled by a remote procedure call mechanism called binder\todo{revisit after \sref{sec:approaches}: if it discusses more about binder; it needs to be introduces more - a short introduction to Android platform architecture with figure. See \url{https://developer.android.com/guide/platform}}. Any app can send messages to the binder arbitrarily, but other apps must explicitly start listening and accept incoming communications. The Android platform provides three main ways to do this:
 \begin{enumerate}
