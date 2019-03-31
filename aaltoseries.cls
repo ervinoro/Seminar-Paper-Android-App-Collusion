@@ -556,129 +556,129 @@
 }
 
 %% Renew the itemize, enumerate, and description environments
-\newlength{\AaltoSeriesListSep}\setlength{\AaltoSeriesListSep}{\baselineskip}
-\newcounter{AaltoSeriesItemizeScope}\setcounter{AaltoSeriesItemizeScope}{0}
-\newcounter{AaltoSeriesEnumerateScope}\setcounter{AaltoSeriesEnumerateScope}{0}
-\renewenvironment{itemize}{%
-	\stepcounter{AaltoSeriesItemizeScope}%
-	\ifthenelse{\arabic{AaltoSeriesItemizeScope} = 1}{%
-		\begin{list}{\labelitemi}{%
-			\topsep\baselineskip\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-		}%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesItemizeScope} = 2}{%
-		\begin{list}{\labelitemii}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesItemizeScope} = 3}{%
-		\begin{list}{\labelitemiii}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesItemizeScope} > 3}{%
-		\begin{list}{\labelitemiv}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-}{%
-	\setlength{\AaltoSeriesListSep}{\itemsep}%
-	\end{list}%
-	\addtocounter{AaltoSeriesItemizeScope}{-1}%
-	\noindent\ignorespacesafterend%
-}
-\renewenvironment{enumerate}{%
-	\stepcounter{AaltoSeriesEnumerateScope}%
-	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 1}{%
-		\begin{list}{\labelenumi}{%
-			\topsep\baselineskip\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-			\usecounter{enumi}%
-		}%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 2}{%
-		\begin{list}{\labelenumii}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-			\usecounter{enumii}%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 3}{%
-		\begin{list}{\labelenumiii}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-			\usecounter{enumiii}%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 4}{%
-		\begin{list}{\labelenumiv}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-			\usecounter{enumiv}%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} > 4}{%
-		\begin{list}{}{%
-			\topsep0mm\partopsep0mm%
-			\leftmargin3mm\rightmargin0mm%
-			\labelwidth1.5mm\labelsep1.5mm%
-			\parsep0mm\listparindent3mm%
-		}%
-		\vskip\AaltoSeriesListSep%
-		\setlength{\itemsep}{\baselineskip}%
-	}{}%
-}{%
-	\setlength{\AaltoSeriesListSep}{\itemsep}%
-	\end{list}%
-	\addtocounter{AaltoSeriesEnumerateScope}{-1}%
-	\noindent\ignorespacesafterend%
-}
-\newenvironment{singleitems}{%
-	\begin{itemize}%
-	\setlength{\itemsep}{0mm}%
-}{%
-	\end{itemize}%
-}
-\newenvironment{singleenums}{%
-	\begin{enumerate}%
-	\setlength{\itemsep}{0mm}%
-}{%
-	\end{enumerate}%
-}
+% \newlength{\AaltoSeriesListSep}\setlength{\AaltoSeriesListSep}{\baselineskip}
+% \newcounter{AaltoSeriesItemizeScope}\setcounter{AaltoSeriesItemizeScope}{0}
+% \newcounter{AaltoSeriesEnumerateScope}\setcounter{AaltoSeriesEnumerateScope}{0}
+% \renewenvironment{itemize}{%
+% 	\stepcounter{AaltoSeriesItemizeScope}%
+% 	\ifthenelse{\arabic{AaltoSeriesItemizeScope} = 1}{%
+% 		\begin{list}{\labelitemi}{%
+% 			\topsep\baselineskip\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 		}%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesItemizeScope} = 2}{%
+% 		\begin{list}{\labelitemii}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesItemizeScope} = 3}{%
+% 		\begin{list}{\labelitemiii}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesItemizeScope} > 3}{%
+% 		\begin{list}{\labelitemiv}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% }{%
+% 	\setlength{\AaltoSeriesListSep}{\itemsep}%
+% 	\end{list}%
+% 	\addtocounter{AaltoSeriesItemizeScope}{-1}%
+% 	\noindent\ignorespacesafterend%
+% }
+% \renewenvironment{enumerate}{%
+% 	\stepcounter{AaltoSeriesEnumerateScope}%
+% 	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 1}{%
+% 		\begin{list}{\labelenumi}{%
+% 			\topsep\baselineskip\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 			\usecounter{enumi}%
+% 		}%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 2}{%
+% 		\begin{list}{\labelenumii}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 			\usecounter{enumii}%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 3}{%
+% 		\begin{list}{\labelenumiii}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 			\usecounter{enumiii}%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} = 4}{%
+% 		\begin{list}{\labelenumiv}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 			\usecounter{enumiv}%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% 	\ifthenelse{\arabic{AaltoSeriesEnumerateScope} > 4}{%
+% 		\begin{list}{}{%
+% 			\topsep0mm\partopsep0mm%
+% 			\leftmargin3mm\rightmargin0mm%
+% 			\labelwidth1.5mm\labelsep1.5mm%
+% 			\parsep0mm\listparindent3mm%
+% 		}%
+% 		\vskip\AaltoSeriesListSep%
+% 		\setlength{\itemsep}{\baselineskip}%
+% 	}{}%
+% }{%
+% 	\setlength{\AaltoSeriesListSep}{\itemsep}%
+% 	\end{list}%
+% 	\addtocounter{AaltoSeriesEnumerateScope}{-1}%
+% 	\noindent\ignorespacesafterend%
+% }
+% \newenvironment{singleitems}{%
+% 	\begin{itemize}[nosep]%
+% 	% \setlength{\itemsep}{0mm}%
+% }{%
+% 	\end{itemize}%
+% }
+% \newenvironment{singleenums}[1][label={\arabic*}]{%
+% 	\begin{enumerate}[nosep]%
+% 	% \setlength{\itemsep}{0mm}%
+% }{%
+% 	\end{enumerate}%
+% }
 
 %% Set the caption formatting
 \RequirePackage{caption}
