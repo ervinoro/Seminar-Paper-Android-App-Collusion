@@ -150,11 +150,11 @@ Apps published by the same entity may share a sandbox. In this case, there are n
 When apps are running in different sandboxes, the Linux kernel prevents these sandboxed apps from accessing any processes or files other than their own. In older Android versions, only Linux discretionary access control was used, allowing apps to make their files world-accessible, which was used internally by shared preferences -- an inter-app communication method discussed by many works~\cite{Bhandari2017, Asavoae2017}. Newer versions of Android forbid this using SELinux mandatory access control rules, meaning that shared preferences are longer relevant for this purpose. Apps can still use any file-based communication methods when they have permission to access the external storage, but this way users would be notified that such communication may take place when the Android system prompts them for permissions.
 
 However, Android also provides a method for apps to communicate without any user-granted permissions or visibility. This is enabled by a remote procedure call mechanism called binder\todo{revisit after \sref{sec:approaches}: if it discusses more about binder; it needs to be introduces more - a short introduction to Android platform architecture with figure. See \url{https://developer.android.com/guide/platform}}. Any app can send messages to the binder arbitrarily, but other apps must explicitly start listening and accept incoming communications. The Android platform provides three main ways to do this:
-\begin{enumerate}
+\begin{itemize}
 	\item Services~\cite[\href{https://developer.android.com/guide/components/services}{``Services overview''}]{AOSPdeveloper}: Apps may start services, which can provide interfaces that are directly accessible using binder.
 	\item Intent filters~\cite[\href{https://developer.android.com/guide/components/intents-filters}{``Intents and Intent Filters''}]{AOSPdeveloper}: Intents are simple message objects that represents an intention to do something. Apps may ask some part of them to be executed when an intent with certain properties matching their filter is initiated.
 	\item ContentProviders~\cite[\href{https://developer.android.com/guide/topics/providers/content-providers}{``Content providers''}]{AOSPdeveloper}: Apps can define ContentProviders to expose some of their data.
-\end{enumerate}
+\end{itemize}
 \TODO{Maybe add something about android platform architecture. Figure 1. Explicit/implicit intents.}
 
 The binder provides an easy way for apps to communicate with each other, promoting openness and allowing a separation of concerns. Examples include apps using an intent to ask the camera app to take a photo instead of asking camera control permission, and communication apps allowing other apps to share data through itself. Since binder has a well-defined interface, information flow through it could be monitored.
@@ -178,7 +178,7 @@ Another approach is presented by \citeauthor{Al-Haiqi2014}~\cite{Al-Haiqi2014}, 
 \label{sec:examples}
 
 Researchers have proposed several hypothetical and proof-of-concept collusion examples, and one example of app collusion has also been discovered in the real world. A common example of app collusion follows the pattern shown in \Fref{fig:sample}, and proceeds as follows:
-\begin{enumerate}[nosep]
+\begin{enumerate}[nosep,label={(\arabic*)}]
 	\item \app{A} obtains some private information.
 	\item \app{A} transmits the information to \app{B} using some overt or covert channel.
 	\item \app{B} exfiltrates the information over the internet.
@@ -213,29 +213,24 @@ No sensitive information is exchanged between the apps, but still all three prop
 \section{Existing methods for detecting collusions}
 \label{sec:approaches}
 
-Attempts with various scopes and outcomes have been made to detect app collusion. Results range from relatively computationally easy but very coarse filters to more accurate but very expensive approaches.
+Attempts with various scopes and outcomes have been made to detect app collusion. Results range from computationally feasible but very coarse filters to more accurate but very expensive approaches.
 
 \subsection{Based on permissions/interfaces}
 \label{sec:filter}
 
-The simplest approach is to base the analysis on statically extracted features of apps, such as the set of permissions declared in their manifests or the set of Android APIs they import. This way large amounts of apps can be quickly scanned, but necessarily only rough estimations can be made, since very little information about the apps is actually used in decision making.
+The simplest approach is to base the analysis on statically extracted features of apps, such as the set of permissions declared or the set of Android APIs imported. Only considering such features makes it feasible to scan large amounts of apps. However, the obtained results only provide a coarse estimation of app collusion.
 
-For example, \citeauthor{Asavoae2016}~\cite{Asavoae2016} describe a filtering method based on app's API calls and the permissions declared in its manifest file. They define collusion as a pair of apps that satisfy these three conditions:
-\begin{enumerate}
-	\item First app declares a permission that they classified as giving access to sensitive information.
-	\item Second app declares a permission that they classified as giving app the ability to send information to the outside world.
-	\item Finally, first app must be able to send, and second app able to receive on the same channel. They consider the following channels:
-	\begin{itemize}[nosep]
-		\item Intents (each action separately)
-		\item External storage
-	\end{itemize}
-	(They also consider shared preferences, each file separately, but this is now deprecated: \Sref{sec:overt})
+One example by \citeauthor{Asavoae2016}~\cite{Asavoae2016} is a filtering method based on the API calls and declared permissions of apps. They define collusion as a pair of apps that satisfy these three conditions:
+\begin{enumerate}[label={C\arabic*}]
+	\item First app declares a permission giving access to sensitive information.
+	\item Second app declares a permission giving app the ability to send information to the outside world.
+	\item Finally, on some channel the first app must be able to send and second app able to receive. As channels they consider Intents (each action separately), External storage, and shared preferences (each file separately; but now deprecated as discussed in \Sref{sec:overt}).
 \end{enumerate}
-It is not clear from their description, but can be assumed, that they further ignore apps that match both first and second criteria, because otherwise their filter would simply detect any app pairs that can communicate using one of these channels. They claim that this approach over-approximates the set of colluding apps, while actually it must be noted that they only consider a narrow subset of app collusions, and, for example, the MoPlus SDK would be labelled as benign by this approach.
+It is not clear from their description, but can be assumed, that they further ignore apps that match both criteria C1 and C2, since otherwise their filter would detect any pair of apps that can communicate using one of these channels. They claim that while not all apps flagged by this approach are necessarily colluding, all colluding apps are flagged by this filter. However, it must be noted that in reality they only consider a narrow subset of app collusions, and, for example, the MoPlus SDK would be labelled as benign by this filter.
 
-\citeauthor{Chen2018}~\cite{Chen2018} propose a similar approach. First, they notice that exists a machine learning algorithm that, given the set of all API calls in an app, can predict whether the app is malicious or not. For communication they only consider intents as a possible channel. For each app they detect which intents it can send and receive, and then they group together apps that could communicate with each other. Finally, to detect, whether a group of apps is benign or malicious, they pass the union of all API calls of the apps in the group to the aforementioned machine learning algorithm.
+\citeauthor{Chen2018}~\cite{Chen2018} propose a similar approach. First, they notice that exists a machine learning algorithm that, given the set of all API calls in an app, can predict whether the app is malicious or not. Only a single overt channel is captured for communication between apps, as their work only considers intents. For each app they detect which intents it can send and receive, and then they group together apps that could communicate with each other. To classify, whether a group of apps is benign or malicious, they pass the union of all API calls used by the apps in the group to the aforementioned machine learning algorithm.
 
-Neither of these approaches can detect whether apps actually communicate with each other, nor what kind of information is exchanged between apps if they do communicate, since they use no information about the order of operations within apps. Additionally, they both consider only limited overt channels.
+Neither of these approaches can detect whether apps communicate with each other, nor what kind of information is exchanged between them, since they use no information about the order of operations within apps. Additionally, they both consider only a limited set of overt channels.
 
 \subsection{Based on control flow analysis}
 \label{sec:flow}
